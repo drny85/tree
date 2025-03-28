@@ -143,7 +143,7 @@ export function AddClientForm({ onOpenChange }: Props) {
                   <Input
                     placeholder="123 Main St, City, State"
                     {...field}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    className="mt-1 block w-full capitalize rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500 text-xs" />

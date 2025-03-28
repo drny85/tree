@@ -16,17 +16,7 @@ export const createOrUpdateInvoice = mutation({
     date: v.string(),
     dueDate: v.optional(v.string()),
     status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
-    items: v.array(
-      v.object({
-        description: v.string(),
-        quantity: v.number(),
-        rate: v.number(),
-        amount: v.number(),
-      }),
-    ),
-    subtotal: v.number(),
     tax: v.number(),
-    total: v.number(),
   },
   handler: async (ctx, args) => {
     const existingInvoice = await ctx.db
@@ -56,29 +46,13 @@ export const getClientInvoices = query({
 export const deleteInvoice = mutation({
   args: { id: v.id("invoices") },
   handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
-  },
-});
-
-export const addItemToInvoice = mutation({
-  args: {
-    invoiceNumber: v.string(),
-    item: v.object({
-      description: v.string(),
-      quantity: v.number(),
-      rate: v.number(),
-      amount: v.number(),
-    }),
-  },
-  handler: async (ctx, args) => {
-    const invoice = await ctx.db
-      .query("invoices")
-      .filter((q) => q.eq("invoiceNumber", args.invoiceNumber))
-      .first();
-    if (invoice) {
-      await ctx.db.patch(invoice._id, {
-        items: [...invoice.items, args.item],
-      });
+    const invoiceItems = await ctx.db
+      .query("items")
+      .filter((q) => q.eq(q.field("invoiceId"), args.id))
+      .collect();
+    for (const item of invoiceItems) {
+      await ctx.db.delete(item._id);
     }
+    await ctx.db.delete(args.id);
   },
 });

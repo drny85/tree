@@ -19,14 +19,11 @@ export default function ClientPage() {
     try {
       if (!client || !invoices) return;
       const invoice = await createInvoice({
-        invoiceNumber: invoices.length + 1 || 0,
-        clientId: client?._id,
+        invoiceNumber: invoices?.length + 1 || 0,
+        clientId: client._id,
         status: "draft",
         date: new Date().toISOString(),
-        items: [],
-        subtotal: 0,
         tax: 0,
-        total: 0,
       });
       console.log("IB", invoice);
       if (invoice) {

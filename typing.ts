@@ -24,8 +24,5 @@ export type Invoice = {
   status: "draft" | "sent" | "paid";
   date: string;
   dueDate?: string;
-  items: InvoiceItem[];
-  subtotal: number;
   tax: number;
-  total: number;
 };

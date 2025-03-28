@@ -5,9 +5,10 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { InvoiceItem } from "@/typing";
 import { useMutation, useQuery } from "convex/react";
+import { format } from "date-fns";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 const companyInfo = {
@@ -31,7 +32,7 @@ export default function InvoicePage() {
   const [isAddItemDialogOpen, setIsAddItemDialogOpen] = useState(false);
   const invoiceDetails = useQuery(api.invoices.getInvoice, { id: invoiceId });
   const invoiceItems = useQuery(api.items.getInvoiceItems, {
-    invoiceId: invoiceId,
+    invoiceId,
   });
   const addItem = useMutation(api.items.createInvoiceItem);
 
@@ -40,7 +41,6 @@ export default function InvoicePage() {
   });
 
   const onAddItem = async (item: InvoiceItem) => {
-    console.log("item", item);
     try {
       await addItem({
         invoiceId: invoiceId,
@@ -56,10 +56,17 @@ export default function InvoicePage() {
     }
   };
 
-  useEffect(() => {}, [client]);
-  if (!client) {
-    return <div>Loading...</div>;
-  }
+  const subTotal = useMemo(() => {
+    if (!invoiceItems) return 0;
+    return invoiceItems.reduce((acc, item) => acc + item.amount, 0);
+  }, [invoiceItems]);
+  const total = useMemo(() => {
+    if (!invoiceItems) return 0;
+    return invoiceItems.reduce(
+      (acc, item) => (acc + item.amount) * item.quantity,
+      0,
+    );
+  }, [invoiceItems]);
 
   if (!invoiceDetails || !client) {
     return <div>Loading...</div>;
@@ -122,15 +129,17 @@ export default function InvoicePage() {
           </div>
           <div>
             <span className="font-semibold">Date: </span>
-            <span>{invoiceDetails.date}</span>
+            <span>{format(invoiceDetails.date, "PP")}</span>
           </div>
         </div>
-        <div className="flex justify-between">
-          <div>
-            <span className="font-semibold">Due Date: </span>
-            <span>{invoiceDetails.dueDate}</span>
+        {invoiceDetails.dueDate && (
+          <div className="flex justify-between">
+            <div>
+              <span className="font-semibold">Due Date: </span>
+              <span>{invoiceDetails.dueDate}</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="flex justify-end mb-4">
@@ -152,7 +161,9 @@ export default function InvoicePage() {
         <tbody>
           {invoiceItems?.map((item, index) => (
             <tr key={index} className="border-b border-gray-100">
-              <td className="py-3 px-4">{item.description}</td>
+              <td className="py-3 px-4 capitalize italic">
+                {item.description}
+              </td>
               <td className="py-3 px-4 text-right">{item.quantity}</td>
               <td className="py-3 px-4 text-right">${item.rate.toFixed(2)}</td>
               <td className="py-3 px-4 text-right">
@@ -169,7 +180,7 @@ export default function InvoicePage() {
         <div className="w-64">
           <div className="flex justify-between py-2">
             <span className="font-medium">Subtotal:</span>
-            <span>${invoiceDetails.subtotal.toFixed(2)}</span>
+            <span>${subTotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between py-2">
             <span className="font-medium">Tax (8%):</span>
@@ -177,7 +188,7 @@ export default function InvoicePage() {
           </div>
           <div className="flex justify-between py-2 border-t border-gray-200 font-bold">
             <span>Total:</span>
-            <span>${invoiceDetails.total.toFixed(2)}</span>
+            <span>${total.toFixed(2)}</span>
           </div>
         </div>
       </div>
