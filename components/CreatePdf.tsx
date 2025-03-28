@@ -29,20 +29,6 @@ export default function CreatePdf({
     );
   }, [invoiceItems]);
 
-  function renderInfo(
-    doc: jsPDF,
-    info: Record<string, string>,
-    startX: number,
-    startY: number,
-  ) {
-    doc.setFontSize(12);
-    let yOffset = startY;
-    Object.entries(info).forEach(([key, value]) => {
-      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-      doc.text(`${capitalizedKey}: ${value}`, startX, yOffset);
-      yOffset += 8; // Adjust the spacing between lines
-    });
-  }
   const createPdf = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();

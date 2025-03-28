@@ -1,9 +1,8 @@
 import { companyInfo } from "@/typing";
-import Image from "next/image";
-import { Button } from "./ui/button";
 import { UserButton } from "@clerk/nextjs";
+import { Users } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { Users, UserPlus } from "lucide-react";
 
 export function Navbar() {
   return (

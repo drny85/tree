@@ -16,6 +16,7 @@ import type {
 import type * as clients from "../clients.js";
 import type * as invoices from "../invoices.js";
 import type * as items from "../items.js";
+import type * as users from "../users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   clients: typeof clients;
   invoices: typeof invoices;
   items: typeof items;
+  users: typeof users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

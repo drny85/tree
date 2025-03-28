@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Doc, Id } from "@/convex/_generated/dataModel";
+import { Doc } from "@/convex/_generated/dataModel";
 import { InvoiceItem } from "@/typing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
