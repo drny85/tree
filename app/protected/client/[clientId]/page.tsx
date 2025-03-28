@@ -30,7 +30,7 @@ export default function ClientPage() {
       });
       console.log("IB", invoice);
       if (invoice) {
-        router.push(`/protected/invoice/${client._id}`);
+        router.push(`/protected/invoice/${invoice}`);
       }
     } catch (error) {
       console.error(error);

@@ -22,6 +22,10 @@ import { Button } from "./ui/button";
 import { Invoice } from "@/typing";
 import { format } from "date-fns";
 import { Input } from "./ui/input";
+import { toast } from "sonner";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import Link from "next/link";
 
 type Props = {
   invoices: Invoice[];
@@ -41,6 +45,35 @@ const columns: ColumnDef<Invoice>[] = [
     accessorKey: "total",
     header: "Total",
     cell: ({ row }) => `$${row.getValue("total")}`,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status");
+      return (
+        <div className="flex items-center space-x-2 justify-center">
+          <div
+            className={`w-2 h-2 rounded-full ${
+              status === "paid"
+                ? "bg-green-500"
+                : status === "pending"
+                  ? "bg-yellow-500"
+                  : "bg-red-500"
+            }`}
+          />
+          <span className="capitalize">{`${row.getValue("status")}`}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const invoice = row.original;
+      return <Actions invoice={invoice} />;
+    },
   },
 ];
 
@@ -134,3 +167,31 @@ function ClientInvoices({ invoices }: Props) {
 }
 
 export default ClientInvoices;
+
+const Actions = ({ invoice }: { invoice: Invoice }) => {
+  const deleteInvoice = useMutation(api.invoices.deleteInvoice);
+  return (
+    <div className="flex items-center space-x-2">
+      <Link href={`/protected/invoice/${invoice._id}`}>
+        <Button>View</Button>
+      </Link>
+
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => {
+          if (!invoice) return;
+          if (invoice.status === "paid") {
+            toast.error("Cannot delete paid invoice");
+            return;
+          }
+
+          deleteInvoice({ id: invoice._id });
+          toast.success("Invoice deleted");
+        }}
+      >
+        Delete
+      </Button>
+    </div>
+  );
+};

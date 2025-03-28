@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { InvoiceItem } from "@/typing";
-import { useUser } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "convex/react";
 import Image from "next/image";
-import { notFound, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const companyInfo = {
   name: "Breidys' Tree Services",
@@ -20,43 +20,48 @@ const companyInfo = {
   logo: "/logo.png", // Place your logo in the public directory
 };
 
-const invoiceDetails = {
-  invoiceNumber: "INV-2023-001",
-  date: new Date().toLocaleDateString(),
-  dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
-  items: [
-    { description: "Service A", quantity: 1, rate: 100, amount: 100 },
-    { description: "Service B", quantity: 2, rate: 75, amount: 150 },
-    { description: "Service C", quantity: 3, rate: 50, amount: 150 },
-  ],
-  subtotal: 400,
-  tax: 32,
-  total: 432,
-};
-
 export default function InvoicePage() {
   // This would be a server component in a real app
   // For demo purposes, we'll structure it as if it were using client components
 
   // Company information (in a real app, this would come from your settings/database)
+  const params = useParams();
+  const { invoiceId } = params as { invoiceId: Id<"invoices"> };
 
   const [isAddItemDialogOpen, setIsAddItemDialogOpen] = useState(false);
-  const [invoiceItems, setInvoiceItems] = useState(invoiceDetails.items);
-  console.log(invoiceItems);
-  const createInvoice = useMutation(api.invoices.createOrUpdateInvoice);
+  const invoiceDetails = useQuery(api.invoices.getInvoice, { id: invoiceId });
+  const invoiceItems = useQuery(api.items.getInvoiceItems, {
+    invoiceId: invoiceId,
+  });
+  const addItem = useMutation(api.items.createInvoiceItem);
 
-  const handleAddItem = (item: InvoiceItem) => {
-    setInvoiceItems([...invoiceItems, item]);
+  const client = useQuery(api.clients.getClient, {
+    id: invoiceDetails?.clientId!,
+  });
+
+  const onAddItem = async (item: InvoiceItem) => {
+    console.log("item", item);
+    try {
+      await addItem({
+        invoiceId: invoiceId,
+        description: item.description,
+        quantity: item.quantity,
+        rate: item.rate,
+        amount: item.amount,
+      });
+      setIsAddItemDialogOpen(false);
+      toast.success("Item added to invoice");
+    } catch (error) {
+      console.error(error);
+    }
   };
-
-  // Invoice details (would normally come from your database)
-
-  const params = useParams();
-  const { clientId } = params as { clientId: Id<"clients"> };
-  const client = useQuery(api.clients.getClient, { id: clientId });
 
   useEffect(() => {}, [client]);
   if (!client) {
+    return <div>Loading...</div>;
+  }
+
+  if (!invoiceDetails || !client) {
     return <div>Loading...</div>;
   }
   return (
@@ -145,7 +150,7 @@ export default function InvoicePage() {
           </tr>
         </thead>
         <tbody>
-          {invoiceDetails.items.map((item, index) => (
+          {invoiceItems?.map((item, index) => (
             <tr key={index} className="border-b border-gray-100">
               <td className="py-3 px-4">{item.description}</td>
               <td className="py-3 px-4 text-right">{item.quantity}</td>
@@ -187,7 +192,7 @@ export default function InvoicePage() {
       <AddItemDialog
         open={isAddItemDialogOpen}
         onOpenChange={setIsAddItemDialogOpen}
-        onAddItem={handleAddItem}
+        onAddItem={onAddItem}
       />
     </div>
   );

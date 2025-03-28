@@ -13,6 +13,13 @@ export default defineSchema({
     address: v.optional(v.string()),
     notes: v.optional(v.string()),
   }),
+  items: defineTable({
+    invoiceId: v.id("invoices"),
+    description: v.string(),
+    quantity: v.number(),
+    rate: v.number(),
+    amount: v.number(),
+  }).index("by_invoice", ["invoiceId"]),
   invoices: defineTable({
     clientId: v.id("clients"),
     invoiceNumber: v.number(),

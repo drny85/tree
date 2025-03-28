@@ -1,3 +1,5 @@
+import { Id } from "./convex/_generated/dataModel";
+
 export type Client = {
   _id: string;
   _creationTime: number;
@@ -16,7 +18,7 @@ export type InvoiceItem = {
 };
 
 export type Invoice = {
-  _id: string;
+  _id: Id<"invoices">;
   _creationTime: number;
   invoiceNumber: number;
   status: "draft" | "sent" | "paid";

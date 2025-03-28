@@ -2,12 +2,9 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
 export const getInvoice = query({
-  args: { invoiceNumber: v.string() },
+  args: { id: v.id("invoices") },
   handler: async (ctx, args) => {
-    const invoice = await ctx.db
-      .query("invoices")
-      .filter((q) => q.eq("invoiceNumber", args.invoiceNumber))
-      .first();
+    const invoice = await ctx.db.get(args.id);
     return invoice;
   },
 });
@@ -53,6 +50,13 @@ export const getClientInvoices = query({
       .order("desc")
       .collect();
     return invoices;
+  },
+});
+
+export const deleteInvoice = mutation({
+  args: { id: v.id("invoices") },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.id);
   },
 });
 
