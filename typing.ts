@@ -26,3 +26,10 @@ export type Invoice = {
   dueDate?: string;
   tax: number;
 };
+
+export const companyInfo = {
+  name: "Breidys' Tree Services",
+  address: "123 Business Street, Suite 100",
+  city: "San Francisco, CA 94103",
+  phone: "(555) 123-4567",
+};

@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 type Props = {
   invoices: Invoice[];
@@ -41,11 +42,7 @@ const columns: ColumnDef<Invoice>[] = [
     header: "Date",
     cell: ({ row }) => format(row.getValue("date"), "PP"),
   },
-  {
-    accessorKey: "total",
-    header: "Total",
-    cell: ({ row }) => `$${row.getValue("total")}`,
-  },
+
   {
     accessorKey: "status",
     header: "Status",
@@ -118,7 +115,12 @@ function ClientInvoices({ invoices }: Props) {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead
+                  key={header.id}
+                  className={cn(
+                    "text-xs font-medium text-gray-500 uppercase tracking-wider",
+                  )}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(

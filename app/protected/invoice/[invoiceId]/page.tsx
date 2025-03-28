@@ -1,25 +1,16 @@
 "use client";
 import { AddItemDialog } from "@/components/AddItemToInvoice";
+import CreatePdf from "@/components/CreatePdf";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { InvoiceItem } from "@/typing";
+import { companyInfo, InvoiceItem } from "@/typing";
 import { useMutation, useQuery } from "convex/react";
 import { format } from "date-fns";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-
-const companyInfo = {
-  name: "Breidys' Tree Services",
-  address: "123 Business Street, Suite 100",
-  city: "San Francisco, CA 94103",
-  phone: "(555) 123-4567",
-  email: "contact@yourcompany.com",
-  website: "www.yourcompany.com",
-  logo: "/logo.png", // Place your logo in the public directory
-};
 
 export default function InvoicePage() {
   // This would be a server component in a real app
@@ -79,7 +70,7 @@ export default function InvoicePage() {
         <div className="flex items-center space-x-4">
           <div className="w-32 h-32 relative rounded-full overflow-hidden">
             <Image
-              src={companyInfo.logo}
+              src={"/logo.png"}
               alt="Company Logo"
               fill
               sizes="100%"
@@ -142,7 +133,12 @@ export default function InvoicePage() {
         )}
       </div>
 
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between my-2 items-center">
+        <CreatePdf
+          client={client}
+          invoiceDetails={invoiceDetails}
+          invoiceItems={invoiceItems}
+        />
         <Button variant="outline" onClick={() => setIsAddItemDialogOpen(true)}>
           Add Item to Invoice
         </Button>
@@ -196,9 +192,7 @@ export default function InvoicePage() {
       {/* Footer */}
       <div className="mt-12 pt-6 border-t border-gray-200 text-center ">
         <p>Thank you for your business!</p>
-        <p className="mt-2">
-          {companyInfo.website} | {companyInfo.email}
-        </p>
+        <p className="mt-2 font-semibold">{companyInfo.name}</p>
       </div>
       <AddItemDialog
         open={isAddItemDialogOpen}

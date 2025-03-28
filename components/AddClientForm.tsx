@@ -121,8 +121,26 @@ export function AddClientForm({ onOpenChange }: Props) {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="(123) 456-7890"
+                    placeholder="(800) 456-7890"
                     {...field}
+                    maxLength={14}
+                    onChange={(e) => {
+                      // Format phone number as (XXX) XXX-XXXX
+                      const value = e.target.value.replace(/\D/g, "");
+                      const formattedValue = value
+                        .replace(
+                          /(\d{3})(\d{0,3})(\d{0,4})/,
+                          (_, p1, p2, p3) => {
+                            let result = "";
+                            if (p1) result += `(${p1})`;
+                            if (p2) result += ` ${p2}`;
+                            if (p3) result += `-${p3}`;
+                            return result;
+                          },
+                        )
+                        .trim();
+                      field.onChange(formattedValue);
+                    }}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </FormControl>
