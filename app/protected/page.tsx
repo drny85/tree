@@ -3,7 +3,7 @@ import React from "react";
 
 function page() {
   return (
-    <main className="container mx-auto py-12 px-4">
+    <main className="mx-auto py-12 px-4 max-w-6xl">
       <ClientsTable />
     </main>
   );

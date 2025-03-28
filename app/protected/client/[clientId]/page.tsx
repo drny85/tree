@@ -46,7 +46,7 @@ export default function ClientPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white dark:bg-black/50 shadow-lg my-8 rounded-lg">
+    <div className="max-w-6xl mx-auto p-8 bg-white dark:bg-black/50 shadow-lg my-8 rounded-lg">
       {/* Client Info */}
       <div className="mb-10 p-2">
         <h2 className="text-2xl font-bold text-gray-800 capitalize">

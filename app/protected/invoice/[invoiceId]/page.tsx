@@ -122,7 +122,7 @@ export default function InvoicePage() {
     return <div>Loading...</div>;
   }
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white dark:bg-slate-600 shadow-lg my-8 rounded-lg">
+    <div className="max-w-6xl mx-auto p-8 bg-white dark:bg-slate-600 shadow-lg my-8 rounded-lg">
       {/* Header with company and client info */}
       <div className="flex justify-between mb-10">
         {/* Company Info */}
@@ -158,8 +158,8 @@ export default function InvoicePage() {
           <h3 className="text-lg font-semibold text-gray-700 dark:text-slate-200">
             Client:
           </h3>
-          <p className="font-medium text-xl">Name: {client?.name}</p>
-          <p className="text-gray-600 dark:text-slate-300">
+          <p className="font-medium text-xl capitalize">Name: {client?.name}</p>
+          <p className="text-gray-600 dark:text-slate-300 capitalize">
             Address:{client?.address}
           </p>
           <p className="text-gray-600 dark:text-slate-300">
