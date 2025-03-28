@@ -5,6 +5,7 @@ import { autoTable } from "jspdf-autotable";
 import "jspdf-autotable";
 import { useMemo } from "react";
 import { Button } from "./ui/button";
+import { File } from "lucide-react";
 
 type Props = {
   invoiceDetails: Invoice;
@@ -50,29 +51,28 @@ export default function CreatePdf({
     const endX = pageWidth - pageWidth * 0.25;
     // Add invoice information horizontally
     // Add invoice information
-    doc.setFontSize(16);
 
     doc.setFontSize(12);
     doc.text(`Invoice Number: ${invoiceDetails.invoiceNumber}`, startX, 20); // Centered in the second section
     doc.text(`Date: ${format(invoiceDetails.date, "PP")}`, endX, 20); // Centered in the third section
 
     // Add company information on the left
-    renderInfo(doc, companyInfo, startX, 40);
-    // doc.setFontSize(18);
-    // doc.text(companyInfo.name, startX, 40);
-    // doc.setFontSize(12);
-    // doc.text(`Address: ${companyInfo.address}`, startX, 50);
-    // doc.text(`City: ${companyInfo.city}`, startX, 60);
-    // doc.text(`Phone: ${companyInfo.phone}`, startX, 70);
-    // doc.text(`Email: ${companyInfo.email}`, startX, 80);
+
+    doc.setFontSize(18);
+    doc.text(companyInfo.name, startX, 40);
+    doc.setFontSize(12);
+
+    doc.text(`City: ${companyInfo.city}`, startX, 48);
+    doc.text(`Phone: ${companyInfo.phone}`, startX, 56);
+    doc.text(`Email: ${companyInfo.email}`, startX, 62);
 
     // Add client information on the right
     const clientInfoX = 120; // Adjust this value to position client info
-    doc.text("Bill To:", clientInfoX, 40);
-    doc.text(`Client Name: ${client?.name}`, clientInfoX, 48);
-    doc.text(`Client Address: ${client?.address}`, clientInfoX, 56);
-    doc.text(`Client Email: ${client?.email}`, clientInfoX, 62);
-    doc.text(`Client Phone: ${client?.phone}`, clientInfoX, 70);
+    doc.text("Client:", clientInfoX, 40);
+    doc.text(`Name: ${client?.name}`, clientInfoX, 48);
+    doc.text(`Address: ${client?.address}`, clientInfoX, 56);
+    doc.text(`Email: ${client?.email}`, clientInfoX, 62);
+    doc.text(`Phone: ${client?.phone}`, clientInfoX, 70);
 
     // Add items table
     autoTable(doc, {
@@ -120,6 +120,7 @@ export default function CreatePdf({
   return (
     <div className="flex justify-end mb-4 space-x-2">
       <Button variant="outline" onClick={createPdf}>
+        <File />
         Create PDF
       </Button>
     </div>

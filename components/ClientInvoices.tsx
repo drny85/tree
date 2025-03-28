@@ -51,7 +51,7 @@ const columns: ColumnDef<Invoice>[] = [
       return (
         <div className="flex items-center space-x-2 justify-center">
           <div
-            className={`w-2 h-2 rounded-full ${
+            className={`w-4 h-4 rounded-full ${
               status === "paid"
                 ? "bg-green-500"
                 : status === "pending"

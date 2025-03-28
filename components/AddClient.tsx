@@ -1,3 +1,4 @@
+import { User } from "lucide-react";
 import { AddClientForm } from "./AddClientForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
@@ -16,8 +17,13 @@ export function AddClient({ open, onOpenChange }: AddClientFormProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add New Client</DialogTitle>
+        <DialogHeader className="flex">
+          <DialogTitle>
+            <div className="flex items-center gap-2">
+              <User size={30} />
+              Add New Client
+            </div>
+          </DialogTitle>
         </DialogHeader>
         <AddClientForm onOpenChange={onOpenChange} open={open} />
       </DialogContent>

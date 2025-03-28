@@ -29,7 +29,7 @@ export type Invoice = {
 
 export const companyInfo = {
   name: "Breidys' Tree Services",
-  address: "123 Business Street, Suite 100",
-  city: "San Francisco, CA 94103",
-  phone: "(555) 123-4567",
+  city: "Stroudsburg, PA 18360",
+  phone: "(917) 238-5229",
+  email: "breidysmelendez2@gmail.com",
 };

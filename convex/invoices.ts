@@ -9,7 +9,7 @@ export const getInvoice = query({
   },
 });
 
-export const createOrUpdateInvoice = mutation({
+export const createInvoice = mutation({
   args: {
     invoiceNumber: v.number(),
     clientId: v.id("clients"),
@@ -19,15 +19,7 @@ export const createOrUpdateInvoice = mutation({
     tax: v.number(),
   },
   handler: async (ctx, args) => {
-    const existingInvoice = await ctx.db
-      .query("invoices")
-      .filter((q) => q.eq(q.field("invoiceNumber"), args.invoiceNumber))
-      .first();
-    if (existingInvoice) {
-      return await ctx.db.patch(existingInvoice._id, args);
-    } else {
-      return await ctx.db.insert("invoices", args);
-    }
+    return await ctx.db.insert("invoices", args);
   },
 });
 

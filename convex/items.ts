@@ -34,7 +34,8 @@ export const updateInvoiceItem = mutation({
     amount: v.number(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, args);
+    const { id, ...updateData } = args; // Destructure to separate id from update data
+    await ctx.db.patch(id, updateData);
   },
 });
 

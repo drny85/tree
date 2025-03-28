@@ -3,6 +3,7 @@ import ClientInvoices from "@/components/ClientInvoices";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { formatPhone } from "@/lib/formatPhone";
 import { useMutation, useQuery } from "convex/react";
 import { notFound, useParams, useRouter } from "next/navigation";
 
@@ -12,7 +13,7 @@ export default function ClientPage() {
   const router = useRouter();
   const client = useQuery(api.clients.getClient, { id: clientId });
   const invoices = useQuery(api.invoices.getClientInvoices, { clientId });
-  const createInvoice = useMutation(api.invoices.createOrUpdateInvoice);
+  const createInvoice = useMutation(api.invoices.createInvoice);
 
   const onCreateInvoice = async () => {
     // TODO: Implement this
@@ -47,15 +48,24 @@ export default function ClientPage() {
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white dark:bg-black/50 shadow-lg my-8 rounded-lg">
       {/* Client Info */}
-      <div className="mb-10">
-        <h2 className="text-2xl font-bold text-gray-800">{client.name}</h2>
-        <p className="text-gray-600">
-          {client.address || "No address provided"}
+      <div className="mb-10 p-2">
+        <h2 className="text-2xl font-bold text-gray-800 capitalize">
+          Name: {client.name}
+        </h2>
+        <p className="text-gray-600 capitalize">
+          Address: {client.address || "No address provided"}
         </p>
-        <p className="text-gray-600">{client.email || "No email provided"}</p>
-        <p className="text-gray-600">{client.phone}</p>
+
+        <p className="text-gray-600">Phone: {formatPhone(client.phone)}</p>
+        <p className="text-gray-600">
+          Email: {client.email || "No email provided"}
+        </p>
       </div>
-      <div className="self-end flex justify-end">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-1">
+          <p className="font-medium">Invoices Total:</p>
+          <p>{invoices.length}</p>
+        </div>
         <Button variant="outline" size="lg" onClick={onCreateInvoice}>
           New Invoice
         </Button>

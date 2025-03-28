@@ -31,18 +31,33 @@ import {
 } from "@tanstack/react-table";
 import { useMutation, useQuery } from "convex/react";
 import { MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import Link from "next/link";
 import { AddClient } from "./AddClient";
 import { EditClientDialog } from "./EditClientForm";
+import { cn } from "@/lib/utils";
 
 export const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          NAME
+          {column.getIsSorted() === "asc"
+            ? " ↑"
+            : column.getIsSorted() === "desc"
+              ? " ↓"
+              : ""}
+        </Button>
+      );
+    },
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("name")}</div>
+      <div className="font-medium capitalize">{row.getValue("name")}</div>
     ),
   },
   {
@@ -65,28 +80,23 @@ export const columns: ColumnDef<Client>[] = [
     accessorKey: "address",
     header: "Address",
     cell: ({ row }) => (
-      <div className="text-muted-foreground">
+      <div className="text-muted-foreground capitalize">
         {row.getValue("address") || "-"}
       </div>
     ),
   },
-  {
-    accessorKey: "view",
-    header: "View",
-    cell: ({ row, cell }) => {
-      const client = row.original;
-      return <Link href={`/protected/client/${client._id}`}>View</Link>;
-    },
-  },
+
   {
     id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const client = row.original;
       const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
       const deleteClient = useMutation(api.clients.deleteClient);
 
       return (
-        <>
+        <div className="flex items-center gap-3">
+          <Link href={`/protected/client/${client._id}`}>View</Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -116,7 +126,7 @@ export const columns: ColumnDef<Client>[] = [
             open={isEditDialogOpen}
             onOpenChange={setIsEditDialogOpen}
           />
-        </>
+        </div>
       );
     },
   },
@@ -130,8 +140,18 @@ export function ClientsTable() {
 
   const clients = useQuery(api.clients.getClients);
 
+  const filteredClients = useMemo(() => {
+    if (!clients) return [];
+    return clients.filter((client) =>
+      Object.values(client)
+        .join(" ")
+        .toLowerCase()
+        .includes(search.toLowerCase()),
+    );
+  }, [clients, search]);
+
   const table = useReactTable({
-    data: clients || [],
+    data: filteredClients || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -161,7 +181,7 @@ export function ClientsTable() {
 
       <div className="rounded-md border border-gray-200 overflow-hidden shadow-sm">
         <Table>
-          <TableHeader className="bg-gray-50">
+          <TableHeader className="bg-gray-200">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
@@ -171,7 +191,7 @@ export function ClientsTable() {
                   return (
                     <TableHead
                       key={header.id}
-                      className="py-3.5 px-4 text-sm font-medium text-gray-700"
+                      className="py-3.5 px-4 text-sm font-medium text-gray-700 uppercase tracking-wide"
                     >
                       {header.isPlaceholder
                         ? null
@@ -191,10 +211,10 @@ export function ClientsTable() {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="hover:bg-gray-400 transition-colors border-b border-gray-100 last:border-0"
+                  className="hover:bg-gray-200 transition-colors border-b border-gray-100 last:border-0"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3 px-4">
+                    <TableCell key={cell.id} className={cn("py-3 px-4")}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
