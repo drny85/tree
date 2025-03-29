@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { companyInfo } from "@/typing";
 import { Authenticated, Unauthenticated } from "convex/react";
 import Link from "next/link";
+import { ContactForm } from "@/components/ContactForm";
 
 export default function Home() {
   return (
@@ -109,6 +110,9 @@ export default function Home() {
             is here to help. Contact us today and let’s nurture your outdoor
             space together!
           </p>
+          <div className="mt-8 mb-8">
+            <ContactForm />
+          </div>
           <Button variant="outline" className="mt-4">
             Get a Quote
           </Button>
