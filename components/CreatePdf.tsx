@@ -19,7 +19,10 @@ export default function CreatePdf({
 }: Props) {
   const subTotal = useMemo(() => {
     if (!invoiceItems) return 0;
-    return invoiceItems.reduce((acc, item) => acc + item.amount, 0);
+    return invoiceItems.reduce(
+      (acc, item) => (acc + item.amount) * item.quantity,
+      0,
+    );
   }, [invoiceItems]);
   const total = useMemo(() => {
     if (!invoiceItems) return 0;
