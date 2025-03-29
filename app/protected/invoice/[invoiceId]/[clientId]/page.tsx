@@ -14,17 +14,16 @@ import { useMutation, useQuery } from "convex/react";
 import { format } from "date-fns";
 import { Edit, Trash } from "lucide-react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { use, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-export default function InvoicePage() {
-  // This would be a server component in a real app
-  // For demo purposes, we'll structure it as if it were using client components
+export default function InvoicePage({
+  params,
+}: {
+  params: Promise<{ clientId: Id<"clients">; invoiceId: Id<"invoices"> }>;
+}) {
+  const { invoiceId, clientId } = use(params);
 
-  // Company information (in a real app, this would come from your settings/database)
-  const params = useParams();
-  const { invoiceId } = params as { invoiceId: Id<"invoices"> };
   const [isEditItemDialogOpen, setIsEditItemDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Doc<"items"> | null>(null);
   const [itemToDelete, setItemToDelete] = useState<Doc<"items"> | null>(null);
@@ -39,7 +38,7 @@ export default function InvoicePage() {
   const updateInvoice = useMutation(api.invoices.createInvoice);
 
   const client = useQuery(api.clients.getClient, {
-    id: invoiceDetails?.clientId!,
+    id: clientId,
   });
 
   const handleDialogChange = (open: boolean) => {

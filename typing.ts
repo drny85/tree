@@ -20,6 +20,7 @@ export type InvoiceItem = {
 export type Invoice = {
   _id: Id<"invoices">;
   _creationTime: number;
+  clientId: Id<"clients">;
   invoiceNumber: number;
   status: "draft" | "sent" | "paid";
   date: string;

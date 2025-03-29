@@ -26,9 +26,9 @@ export default function ClientPage() {
         date: new Date().toISOString(),
         tax: 0,
       });
-      console.log("IB", invoice);
+
       if (invoice) {
-        router.push(`/protected/invoice/${invoice}`);
+        router.push(`/protected/invoice/${invoice}/${clientId}`);
       }
     } catch (error) {
       console.error(error);

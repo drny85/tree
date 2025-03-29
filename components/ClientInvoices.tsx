@@ -27,57 +27,57 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Id } from "@/convex/_generated/dataModel";
 
 type Props = {
   invoices: Invoice[];
 };
 
-const columns: ColumnDef<Invoice>[] = [
-  {
-    accessorKey: "invoiceNumber",
-    header: "Invoice #",
-  },
-  {
-    accessorKey: "date",
-    header: "Date",
-    cell: ({ row }) => format(row.getValue("date"), "PP"),
-  },
-
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status");
-      return (
-        <div className="flex items-center space-x-2 justify-center">
-          <div
-            className={`w-4 h-4 rounded-full ${
-              status === "paid"
-                ? "bg-green-500"
-                : status === "pending"
-                  ? "bg-yellow-500"
-                  : "bg-red-500"
-            }`}
-          />
-          <span className="capitalize">{`${row.getValue("status")}`}</span>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const invoice = row.original;
-      return <Actions invoice={invoice} />;
-    },
-  },
-];
-
 function ClientInvoices({ invoices }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [search, setSearch] = useState("");
+  const columns: ColumnDef<Invoice>[] = [
+    {
+      accessorKey: "invoiceNumber",
+      header: "Invoice #",
+    },
+    {
+      accessorKey: "date",
+      header: "Date",
+      cell: ({ row }) => format(row.getValue("date"), "PP"),
+    },
+
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status");
+        return (
+          <div className="flex items-center space-x-2 justify-center">
+            <div
+              className={`w-4 h-4 rounded-full ${
+                status === "paid"
+                  ? "bg-green-500"
+                  : status === "pending"
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
+              }`}
+            />
+            <span className="capitalize">{`${row.getValue("status")}`}</span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const invoice = row.original;
+        return <Actions invoice={invoice} />;
+      },
+    },
+  ];
   const table = useReactTable({
     data: invoices || [],
     columns,
@@ -174,7 +174,7 @@ const Actions = ({ invoice }: { invoice: Invoice }) => {
   const deleteInvoice = useMutation(api.invoices.deleteInvoice);
   return (
     <div className="flex items-center space-x-2">
-      <Link href={`/protected/invoice/${invoice._id}`}>
+      <Link href={`/protected/invoice/${invoice._id}/${invoice.clientId}`}>
         <Button>View</Button>
       </Link>
 
