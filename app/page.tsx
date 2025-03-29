@@ -58,7 +58,9 @@ export default function Home() {
               Landscaping
             </h2>
             <p className="text-gray-700">
-              Transform your outdoor space with our expert landscaping services.
+              Enhance the beauty and health of your outdoor space with our
+              expert tree care and landscaping services. Let us create a
+              thriving, green environment for you to enjoy!
             </p>
           </div>
           <div className="flex-1">
@@ -73,8 +75,10 @@ export default function Home() {
               Tree Care
             </h2>
             <p className="text-gray-700">
-              Ensure the health and beauty of your trees with our professional
-              care.
+              Protect and enhance the natural beauty of your landscape with our
+              professional tree care services. From expert pruning and
+              maintenance to disease prevention and removal, we ensure your
+              trees stay healthy, vibrant, and safe for years to come
             </p>
           </div>
           <div className="flex-1">
@@ -89,7 +93,10 @@ export default function Home() {
               Tree Removal
             </h2>
             <p className="text-gray-700">
-              Safe and efficient tree removal services for any situation.
+              Whether you’re dealing with a hazardous tree, storm damage, or
+              simply making space for a new project, our skilled team provides
+              safe, efficient, and professional tree removal services tailored
+              to your needs
             </p>
           </div>
         </section>
