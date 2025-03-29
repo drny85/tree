@@ -82,7 +82,7 @@ export function ClientsTable() {
       accessorKey: "email",
       header: "Email",
       cell: ({ row }) => (
-        <div className="text-muted-foreground">
+        <div className="text-muted-foreground hidden md:table-cell">
           {row.getValue("email") || "-"}
         </div>
       ),
@@ -91,14 +91,16 @@ export function ClientsTable() {
       accessorKey: "phone",
       header: "Phone",
       cell: ({ row }) => (
-        <div className="text-muted-foreground">{row.getValue("phone")}</div>
+        <div className="text-muted-foreground hidden md:table-cell">
+          {row.getValue("phone")}
+        </div>
       ),
     },
     {
       accessorKey: "address",
       header: "Address",
       cell: ({ row }) => (
-        <div className="text-muted-foreground capitalize">
+        <div className="text-muted-foreground capitalize hidden md:table-cell">
           {row.getValue("address") || "-"}
         </div>
       ),
@@ -106,18 +108,23 @@ export function ClientsTable() {
 
     {
       id: "actions",
-      header: "Actions",
+      header: "",
       cell: ({ row }) => {
         const client = row.original;
 
         return (
-          <div className="flex items-center gap-3">
-            <Link href={`/protected/client/${client._id}`}>View</Link>
+          <div className="flex items-center gap-3 md:w-fit w-full justify-betweent px-10 md:px-4">
+            <Link
+              className="font-medium"
+              href={`/protected/client/${client._id}`}
+            >
+              View
+            </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
                   <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreHorizontal size={38} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -167,7 +174,7 @@ export function ClientsTable() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4">
+      <div className="flex items-center justify-between py-4 gap-3">
         <Input
           placeholder="Search clients..."
           value={search}
@@ -185,13 +192,20 @@ export function ClientsTable() {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="border-b border-gray-200"
+                className={cn("border-b border-gray-200")}
               >
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
                       key={header.id}
-                      className="py-3.5 px-4 text-sm font-medium text-gray-700 uppercase tracking-wide"
+                      className={cn(
+                        "py-3.5 px-4 text-sm font-medium text-gray-700 uppercase tracking-wide",
+                        {
+                          "hidden md:table-cell": !["name", "actions"].includes(
+                            header.id,
+                          ),
+                        },
+                      )}
                     >
                       {header.isPlaceholder
                         ? null
@@ -211,7 +225,9 @@ export function ClientsTable() {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="hover:bg-gray-200 transition-colors border-b border-gray-100 last:border-0"
+                  className={cn(
+                    "hover:bg-gray-200 transition-colors border-b border-gray-100 last:border-0",
+                  )}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className={cn("py-3 px-4")}>

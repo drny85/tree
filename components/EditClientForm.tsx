@@ -92,7 +92,7 @@ export function EditClientDialog({
                 <FormItem>
                   <FormLabel>Full Name*</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} />
+                    <Input autoFocus placeholder="John Doe" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
