@@ -46,7 +46,6 @@ export default function CreatePdf({
 
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    console.log(pageWidth, pageHeight);
 
     const startX = pageWidth * 0.05;
     const endX = pageWidth - pageWidth * 0.1;
@@ -106,14 +105,7 @@ export default function CreatePdf({
         ]) || [],
 
       tableLineColor: [200, 200, 200],
-      tableLineWidth: 0.5,
-      didDrawPage: () => {
-        // Draw the line at the bottom of the page
-        const pageHeight = doc.internal.pageSize.getHeight();
-        doc.setLineWidth(0.5);
-        doc.setDrawColor(200, 200, 200);
-        doc.line(10, pageHeight - 10, pageWidth - 10, pageHeight - 10);
-      },
+      tableLineWidth: 0.2,
     });
 
     // Add totals
@@ -141,7 +133,7 @@ export default function CreatePdf({
     doc.text(
       "Thank you for your business!:",
       pageWidth / 2 - 10,
-      pageHeight - 10,
+      pageHeight - 12,
       { align: "center" },
     );
 
