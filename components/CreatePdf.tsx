@@ -63,7 +63,7 @@ export default function CreatePdf({
       pageWidth / 2 - 20,
       20,
     ); // Centered in the second section
-    doc.text(`Date: ${format(invoiceDetails.date, "PP")}`, endX - 30, 20); // Centered in the third section
+    doc.text(`Date: ${format(new Date().toISOString(), "PP")}`, endX - 30, 20); // Centered in the third section
 
     // Add company information on the left
 
@@ -138,6 +138,13 @@ export default function CreatePdf({
       pageWidth / 2 - 10,
       pageHeight - 12,
       { align: "center" },
+    );
+    doc.setFontSize(7);
+    doc.text(
+      `created on: ${format(invoiceDetails.date, "PPpp")}`,
+      endX,
+      pageHeight - 12,
+      { align: "right" },
     );
 
     // Save the PDF
