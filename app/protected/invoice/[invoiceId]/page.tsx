@@ -126,9 +126,9 @@ export default function InvoicePage() {
       <div className="flex md:justify-between mb-10 flex-col items-center md:flex-row">
         {/* Company Info */}
         <div className="flex items-center space-x-4">
-          <div className="w-32 h-32 relative rounded-full overflow-hidden">
+          <div className="w-40 h-40 relative rounded-full overflow-hidden">
             <Image
-              src={"/logo.png"}
+              src={"/main-logo.png"}
               alt="Company Logo"
               fill
               sizes="100%"
