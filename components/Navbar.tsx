@@ -21,9 +21,11 @@ export function Navbar() {
                 className="object-contain rounded-full"
               />
             </div>
-            <span className="text-xl font-semibold text-gray-900 dark:text-white hidden md:flex">
-              {companyInfo.name}
-            </span>
+            <Link href="/protected">
+              <span className="text-xl font-semibold text-gray-900 dark:text-white hidden md:flex  hover:cursor-pointer">
+                {companyInfo.name}
+              </span>
+            </Link>
           </div>
 
           {/* Navigation Links and User Button */}

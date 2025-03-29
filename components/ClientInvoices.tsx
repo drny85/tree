@@ -58,7 +58,7 @@ function ClientInvoices({ invoices }: Props) {
               className={`w-4 h-4 rounded-full ${
                 status === "paid"
                   ? "bg-green-500"
-                  : status === "pending"
+                  : status === "sent"
                     ? "bg-yellow-500"
                     : "bg-red-500"
               }`}
