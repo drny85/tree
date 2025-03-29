@@ -1,10 +1,19 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { current, getCurrentUser, userByClerkUserId } from "./users";
 
 export const getClients = query({
   args: {},
   handler: async (ctx, args) => {
-    return await ctx.db.query("clients").collect();
+    const user = await getCurrentUser(ctx);
+    if (!user) {
+      throw new Error("Not authenticated");
+    }
+
+    return await ctx.db
+      .query("clients")
+      .withIndex("by_clerkUserId", (q) => q.eq("clerkUserId", user.clerkUserId))
+      .collect();
   },
 });
 
@@ -17,7 +26,11 @@ export const createClient = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("clients", args);
+    const user = await getCurrentUser(ctx);
+    if (!user) {
+      throw new Error("Not authenticated");
+    }
+    await ctx.db.insert("clients", { ...args, clerkUserId: user.clerkUserId });
   },
 });
 

@@ -15,8 +15,7 @@ import { format } from "date-fns";
 import { Edit, Trash } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { it } from "node:test";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export default function InvoicePage() {
@@ -38,7 +37,7 @@ export default function InvoicePage() {
   const addItem = useMutation(api.items.createInvoiceItem);
   const deleteItem = useMutation(api.items.deleteInvoiceItem);
   const updateInvoice = useMutation(api.invoices.createInvoice);
-  console.log(invoiceId);
+
   const client = useQuery(api.clients.getClient, {
     id: invoiceDetails?.clientId!,
   });

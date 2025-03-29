@@ -12,8 +12,7 @@ export const userByClerkUserId = async (ctx: QueryCtx, clerkUserId: string) => {
 export const getCurrentUser = async (ctx: QueryCtx) => {
   const indetity = await ctx.auth.getUserIdentity();
   if (!indetity) return null;
-  const user = await userByClerkUserId(ctx, indetity.subject);
-  return user;
+  return await userByClerkUserId(ctx, indetity.subject);
 };
 
 export const current = query({

@@ -38,106 +38,13 @@ import { AddClient } from "./AddClient";
 import { EditClientDialog } from "./EditClientForm";
 import { cn } from "@/lib/utils";
 
-export const columns: ColumnDef<Client>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          NAME
-          {column.getIsSorted() === "asc"
-            ? " ↑"
-            : column.getIsSorted() === "desc"
-              ? " ↓"
-              : ""}
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="font-medium capitalize">{row.getValue("name")}</div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => (
-      <div className="text-muted-foreground">
-        {row.getValue("email") || "-"}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "phone",
-    header: "Phone",
-    cell: ({ row }) => (
-      <div className="text-muted-foreground">{row.getValue("phone")}</div>
-    ),
-  },
-  {
-    accessorKey: "address",
-    header: "Address",
-    cell: ({ row }) => (
-      <div className="text-muted-foreground capitalize">
-        {row.getValue("address") || "-"}
-      </div>
-    ),
-  },
-
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const client = row.original;
-      const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-      const deleteClient = useMutation(api.clients.deleteClient);
-
-      return (
-        <div className="flex items-center gap-3">
-          <Link href={`/protected/client/${client._id}`}>View</Link>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  if (confirm("Are you sure you want to delete this client?")) {
-                    deleteClient({ id: client._id as any });
-                  }
-                }}
-                className="text-red-600"
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <EditClientDialog
-            client={client}
-            open={isEditDialogOpen}
-            onOpenChange={setIsEditDialogOpen}
-          />
-        </div>
-      );
-    },
-  },
-];
-
 export function ClientsTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [search, setSearch] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-
+  const deleteClient = useMutation(api.clients.deleteClient);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const clients = useQuery(api.clients.getClients);
 
   const filteredClients = useMemo(() => {
@@ -149,6 +56,99 @@ export function ClientsTable() {
         .includes(search.toLowerCase()),
     );
   }, [clients, search]);
+  const columns: ColumnDef<Client>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            NAME
+            {column.getIsSorted() === "asc"
+              ? " ↑"
+              : column.getIsSorted() === "desc"
+                ? " ↓"
+                : ""}
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="font-medium capitalize">{row.getValue("name")}</div>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => (
+        <div className="text-muted-foreground">
+          {row.getValue("email") || "-"}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "phone",
+      header: "Phone",
+      cell: ({ row }) => (
+        <div className="text-muted-foreground">{row.getValue("phone")}</div>
+      ),
+    },
+    {
+      accessorKey: "address",
+      header: "Address",
+      cell: ({ row }) => (
+        <div className="text-muted-foreground capitalize">
+          {row.getValue("address") || "-"}
+        </div>
+      ),
+    },
+
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const client = row.original;
+
+        return (
+          <div className="flex items-center gap-3">
+            <Link href={`/protected/client/${client._id}`}>View</Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (
+                      confirm("Are you sure you want to delete this client?")
+                    ) {
+                      deleteClient({ id: client._id as any });
+                    }
+                  }}
+                  className="text-red-600"
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <EditClientDialog
+              client={client}
+              open={isEditDialogOpen}
+              onOpenChange={setIsEditDialogOpen}
+            />
+          </div>
+        );
+      },
+    },
+  ];
 
   const table = useReactTable({
     data: filteredClients || [],

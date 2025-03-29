@@ -82,7 +82,7 @@ export default function CreatePdf({
 
     // Add totals
     // Add totals
-    const finalY = (doc as any).lastAutoTable?.finalY || 130;
+    const finalY = (doc as unknown as any).lastAutoTable?.finalY || 130;
 
     const rightAlignX = pageWidth - 30; // Adjust this value for padding
 

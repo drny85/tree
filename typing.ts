@@ -1,7 +1,7 @@
 import { Id } from "./convex/_generated/dataModel";
 
 export type Client = {
-  _id: string;
+  _id: Id<"clients">;
   _creationTime: number;
   name: string;
   email?: string;

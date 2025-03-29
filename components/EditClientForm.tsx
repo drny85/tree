@@ -62,7 +62,7 @@ export function EditClientDialog({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await updateClient({
-        id: client._id as any,
+        id: client._id,
         name: values.name,
         email: values.email || undefined,
         phone: values.phone,

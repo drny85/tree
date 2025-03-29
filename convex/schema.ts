@@ -19,7 +19,8 @@ export default defineSchema({
     phone: v.string(),
     address: v.optional(v.string()),
     notes: v.optional(v.string()),
-  }),
+    clerkUserId: v.string(),
+  }).index("by_clerkUserId", ["clerkUserId"]),
   items: defineTable({
     invoiceId: v.id("invoices"),
     description: v.string(),
