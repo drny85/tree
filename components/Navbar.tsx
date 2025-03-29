@@ -3,6 +3,7 @@ import { UserButton } from "@clerk/nextjs";
 import { Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ModeToggle } from "./ModeToggle";
 
 export function Navbar() {
   return (
@@ -20,7 +21,7 @@ export function Navbar() {
                 className="object-contain rounded-full"
               />
             </div>
-            <span className="text-xl font-semibold text-gray-900 dark:text-white">
+            <span className="text-xl font-semibold text-gray-900 dark:text-white hidden md:flex">
               {companyInfo.name}
             </span>
           </div>
@@ -34,7 +35,7 @@ export function Navbar() {
               <Users size={20} />
               <span>Clients</span>
             </Link>
-
+            <ModeToggle />
             <UserButton />
           </div>
         </div>

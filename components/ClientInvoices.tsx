@@ -35,7 +35,7 @@ type Props = {
 const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "invoiceNumber",
-    header: "Invoice Number",
+    header: "Invoice #",
   },
   {
     accessorKey: "date",
@@ -118,7 +118,7 @@ function ClientInvoices({ invoices }: Props) {
                 <TableHead
                   key={header.id}
                   className={cn(
-                    "text-xs font-medium text-gray-500 uppercase tracking-wider",
+                    "text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-slate-300",
                   )}
                 >
                   {header.isPlaceholder

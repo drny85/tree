@@ -11,7 +11,7 @@ import { ContactForm } from "@/components/ContactForm";
 
 export default function Home() {
   return (
-    <div className="min-h-svh flex flex-col">
+    <div className="min-h-svh flex flex-col max-w-7xl mx-auto">
       <header className="sticky top-0 z-10 bg-green-600 p-4 border-b-2 border-green-700 flex flex-row justify-between items-center text-white">
         <div className="flex items-center space-x-2">
           <Image
@@ -46,6 +46,9 @@ export default function Home() {
             Your trusted partner in landscaping, tree care, and removal.
           </p>
         </section>
+        <h2 className="text-4xl font-bold text-green-700 text-center">
+          Services
+        </h2>
         <section className="flex flex-col md:flex-row gap-8">
           <div className="flex-1">
             <Image
@@ -102,7 +105,7 @@ export default function Home() {
           </div>
         </section>
         <section className="text-center mt-8">
-          <h2 className="text-3xl font-bold text-green-700">Contact Us</h2>
+          <h2 className="text-4xl font-bold text-green-700">Contact Us</h2>
           <p className="mt-4 text-lg text-gray-700">
             At {companyInfo.name}, we are committed to preserving the beauty and
             health of your trees with expert care and sustainable solutions.

@@ -104,7 +104,7 @@ export default function CreatePdf({
   };
 
   return (
-    <div className="flex justify-end mb-4 space-x-2">
+    <div className="flex space-x-2">
       <Button variant="outline" onClick={createPdf}>
         <File />
         Create PDF

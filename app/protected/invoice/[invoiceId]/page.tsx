@@ -121,9 +121,9 @@ export default function InvoicePage() {
     return <div>Loading...</div>;
   }
   return (
-    <div className="max-w-6xl mx-auto p-8 bg-white dark:bg-slate-600 shadow-lg my-8 rounded-lg">
+    <div className="max-w-5xl mx-auto p-8 bg-white dark:bg-slate-600 shadow-lg my-8 rounded-lg container w-full">
       {/* Header with company and client info */}
-      <div className="flex justify-between mb-10">
+      <div className="flex md:justify-between mb-10 flex-col items-center md:flex-row">
         {/* Company Info */}
         <div className="flex items-center space-x-4">
           <div className="w-32 h-32 relative rounded-full overflow-hidden">
@@ -169,9 +169,7 @@ export default function InvoicePage() {
           </p>
         </div>
       </div>
-      <div className="flex items-center justify-center py-2">
-        Invoice ID: {invoiceId}
-      </div>
+
       {/* Invoice Details */}
       <div className="border-t border-b border-gray-200 py-4 mb-6">
         <div className="flex justify-between mb-2">
@@ -198,7 +196,7 @@ export default function InvoicePage() {
         )}
       </div>
 
-      <div className="flex justify-between my-2 items-center">
+      <div className="flex justify-between  mb-2 items-center">
         {invoiceItems && invoiceItems?.length > 0 && (
           <CreatePdf
             client={client}
@@ -207,7 +205,11 @@ export default function InvoicePage() {
           />
         )}
         {invoiceItems && invoiceItems.length > 0 && (
-          <Button variant="outline" onClick={() => setIsStatusDialogOpen(true)}>
+          <Button
+            variant="outline"
+            className="hidden md:flex"
+            onClick={() => setIsStatusDialogOpen(true)}
+          >
             Change Status
           </Button>
         )}
@@ -252,6 +254,7 @@ export default function InvoicePage() {
                 <td className="py-3 px-4 text-right space-x-2">
                   <Button
                     variant={"ghost"}
+                    className="hidden md:table-cell"
                     onClick={() => {
                       setItemToDelete(item);
                     }}

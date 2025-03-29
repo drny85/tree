@@ -68,8 +68,10 @@ export function AddClientForm({ onOpenChange }: Props) {
   }
 
   return (
-    <div className="max-w-xl p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Client</h2>
+    <div className="max-w-xl p-6 bg-white rounded-lg shadow-md dark:bg-slate-700">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-slate-300">
+        Add New Client
+      </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
