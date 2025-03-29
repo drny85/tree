@@ -34,6 +34,31 @@ export const getClientInvoices = query({
     return invoices;
   },
 });
+export const updateInvoice = mutation({
+  args: {
+    id: v.id("invoices"),
+    invoiceNumber: v.number(),
+    clientId: v.id("clients"),
+    date: v.string(),
+    dueDate: v.optional(v.string()),
+    status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
+    tax: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const existingInvoice = await ctx.db.get(args.id);
+    if (!existingInvoice) {
+      throw new Error("Invoice not found");
+    }
+    return await ctx.db.patch(args.id, {
+      invoiceNumber: args.invoiceNumber,
+      clientId: args.clientId,
+      date: args.date,
+      dueDate: args.dueDate,
+      status: args.status,
+      tax: args.tax,
+    });
+  },
+});
 
 export const deleteInvoice = mutation({
   args: { id: v.id("invoices") },

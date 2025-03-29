@@ -35,7 +35,7 @@ export default function InvoicePage({
   });
   const addItem = useMutation(api.items.createInvoiceItem);
   const deleteItem = useMutation(api.items.deleteInvoiceItem);
-  const updateInvoice = useMutation(api.invoices.createInvoice);
+  const updateInvoice = useMutation(api.invoices.updateInvoice);
 
   const client = useQuery(api.clients.getClient, {
     id: clientId,
@@ -69,10 +69,9 @@ export default function InvoicePage({
     invoiceDetails?.status || "draft",
   );
 
-  const handleStatusChange = (status: Doc<"invoices">["status"]) => {
-    setInvoiceStatus(status);
-
-    updateInvoice({
+  const handleStatusChange = async (status: Doc<"invoices">["status"]) => {
+    await updateInvoice({
+      id: invoiceId,
       clientId: invoiceDetails?.clientId!,
       date: invoiceDetails?.date!,
       status,
