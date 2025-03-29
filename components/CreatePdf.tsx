@@ -107,7 +107,7 @@ export default function CreatePdf({
 
       tableLineColor: [200, 200, 200],
       tableLineWidth: 0.5,
-      didDrawPage: (data) => {
+      didDrawPage: () => {
         // Draw the line at the bottom of the page
         const pageHeight = doc.internal.pageSize.getHeight();
         doc.setLineWidth(0.5);
