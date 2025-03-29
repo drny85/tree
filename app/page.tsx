@@ -8,6 +8,7 @@ import { companyInfo } from "@/typing";
 import { Authenticated, Unauthenticated } from "convex/react";
 import Link from "next/link";
 import { ContactForm } from "@/components/ContactForm";
+import { ModeToggle } from "@/components/ModeToggle";
 
 export default function Home() {
   return (
@@ -25,6 +26,7 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-5 ml-auto pr-2">
           <Unauthenticated>
+            <ModeToggle className="dark:bg-primary bg-green-600" />
             <SignInButton />
           </Unauthenticated>
         </div>

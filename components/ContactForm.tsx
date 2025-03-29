@@ -1,7 +1,9 @@
 "use client";
 
+import { sendEmail } from "@/actions/sendEmail";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "./ui/button";
 import {
@@ -14,7 +16,7 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { toast } from "sonner";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -24,6 +26,7 @@ const formSchema = z.object({
 });
 
 export function ContactForm() {
+  const [emailSent, setEmailSent] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,11 +36,42 @@ export function ContactForm() {
       message: "",
     },
   });
+  const {
+    formState: { isSubmitting },
+  } = form;
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    toast.success("Message sent successfully!");
-    form.reset();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      const sent = await sendEmail(formData);
+      if (!sent) {
+        throw new Error("Message failed to send!");
+      }
+      toast.success("Message sent successfully!");
+      form.reset();
+      setEmailSent(true);
+    } catch (error) {
+      console.error(error);
+      toast.error("Message failed to send!", {
+        description: "Please try again later.",
+      });
+    }
+  }
+  if (emailSent) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Message Sent</h2>
+          <p className="text-gray-600">
+            Thank you for contacting us. We will get back to you soon.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -54,7 +88,11 @@ export function ContactForm() {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} />
+                  <Input
+                    placeholder="John Doe"
+                    {...field}
+                    className="capitalize"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,7 +161,7 @@ export function ContactForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
           Send Message
         </Button>
       </form>
