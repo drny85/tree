@@ -20,14 +20,14 @@ export default function CreatePdf({
   const subTotal = useMemo(() => {
     if (!invoiceItems) return 0;
     return invoiceItems.reduce(
-      (acc, item) => (acc + item.amount) * item.quantity,
+      (acc, item) => acc + item.rate * item.quantity,
       0,
     );
   }, [invoiceItems]);
   const total = useMemo(() => {
     if (!invoiceItems) return 0;
     return invoiceItems.reduce(
-      (acc, item) => (acc + item.amount) * item.quantity,
+      (acc, item) => acc + item.rate * item.quantity,
       0,
     );
   }, [invoiceItems]);
