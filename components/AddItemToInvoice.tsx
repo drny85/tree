@@ -61,18 +61,15 @@ export function AddItemDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
+      <DialogContent className="max-w-md mx-auto rounded-lg shadow-lg p-6">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold text-gray-800">
+          <DialogTitle className="text-lg font-semibold ">
             Add Item to Invoice
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleAddItem)} className="space-y-4">
           <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="description" className="block text-sm font-medium ">
               Description
             </label>
             <Input
@@ -85,10 +82,7 @@ export function AddItemDialog({
             )}
           </div>
           <div className="gap-1">
-            <label
-              htmlFor="quantity"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="quantity" className="block text-sm font-medium">
               Quantity
             </label>
             <Input
@@ -102,10 +96,7 @@ export function AddItemDialog({
             )}
           </div>
           <div>
-            <label
-              htmlFor="amount"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="amount" className="block text-sm font-medium ">
               Price
             </label>
             <CurrencyInput

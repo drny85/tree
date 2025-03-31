@@ -3,6 +3,7 @@ import { AddItemDialog } from "@/components/AddItemToInvoice";
 import { StatusChangeDialog } from "@/components/ChangeStatus";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import CreatePdf from "@/components/CreatePdf";
+import { DiscountDialog } from "@/components/DiscountButton";
 import { EditItemDialog } from "@/components/EditIvoiceItem";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
@@ -10,6 +11,7 @@ import { Doc, Id } from "@/convex/_generated/dataModel";
 import { formatPhone } from "@/lib/formatPhone";
 import { cn } from "@/lib/utils";
 import { companyInfo, InvoiceItem } from "@/typing";
+import { getDiscountAmount } from "@/utils/getDiscountAmount";
 import { useMutation, useQuery } from "convex/react";
 import { format } from "date-fns";
 import { Edit, Trash } from "lucide-react";
@@ -29,6 +31,7 @@ export default function InvoicePage({
   const [itemToDelete, setItemToDelete] = useState<Doc<"items"> | null>(null);
   const updateItem = useMutation(api.items.updateInvoiceItem);
   const [isAddItemDialogOpen, setIsAddItemDialogOpen] = useState(false);
+  const [isDiscountDialogOpen, setIsDiscountDialogOpen] = useState(false);
   const invoiceDetails = useQuery(api.invoices.getInvoice, { id: invoiceId });
   const invoiceItems = useQuery(api.items.getInvoiceItems, {
     invoiceId,
@@ -46,6 +49,21 @@ export default function InvoicePage({
     if (!open) {
       setSelectedItem(null);
     }
+  };
+
+  const handleApplyDiscount = async (discount: number) => {
+    if (!invoiceDetails || discount <= 0) return;
+    await updateInvoice({
+      id: invoiceId,
+      clientId: invoiceDetails.clientId,
+      date: invoiceDetails.date,
+      status: invoiceDetails.status,
+      invoiceNumber: invoiceDetails.invoiceNumber,
+      tax: invoiceDetails.tax,
+      discount: discount,
+    });
+
+    toast.success(`Discount of ${discount}% applied`);
   };
 
   const onAddItem = async (item: InvoiceItem) => {
@@ -68,6 +86,7 @@ export default function InvoicePage({
 
   const handleStatusChange = async (status: Doc<"invoices">["status"]) => {
     await updateInvoice({
+      discount: invoiceDetails?.discount!,
       id: invoiceId,
       clientId: invoiceDetails?.clientId!,
       date: invoiceDetails?.date!,
@@ -107,13 +126,28 @@ export default function InvoicePage({
       0,
     );
   }, [invoiceItems]);
+  const discount = useMemo(() => {
+    if (!invoiceDetails) return 0;
+    return invoiceDetails.discount;
+  }, [invoiceDetails]);
+
+  const discountAmount = useMemo(() => {
+    if (!invoiceDetails || !invoiceDetails.discount) return 0;
+
+    const amount = getDiscountAmount(subTotal, discount || 0);
+    return amount;
+  }, [invoiceDetails, subTotal, discount]);
+
   const total = useMemo(() => {
     if (!invoiceItems) return 0;
-    return invoiceItems.reduce(
+    const t = invoiceItems.reduce(
       (acc, item) => acc + item.rate * item.quantity,
       0,
     );
-  }, [invoiceItems]);
+    if (discount && discount > 0) return t - (t * discount) / 100;
+    // Apply discoun
+    return t;
+  }, [invoiceItems, discount]);
 
   if (!invoiceDetails || !client) {
     return <div>Loading...</div>;
@@ -166,6 +200,15 @@ export default function InvoicePage({
             Phone: {formatPhone(client?.phone)}
           </p>
         </div>
+      </div>
+      <div className="flex justify-end my-2">
+        <Button
+          variant="outline"
+          onClick={() => setIsDiscountDialogOpen(true)}
+          className="text-sm bg-green-500 text-white font-bold "
+        >
+          Apply Discount
+        </Button>
       </div>
 
       {/* Invoice Details */}
@@ -284,6 +327,16 @@ export default function InvoicePage({
               <span className="font-medium">Subtotal:</span>
               <span>${subTotal.toFixed(2)}</span>
             </div>
+            {discount && discount > 0 && (
+              <div className="flex justify-between py-2">
+                <span className="font-sm text-red-400">
+                  Discount ({invoiceDetails.discount}%):
+                </span>
+                <span className="font-sm text-red-400">
+                  ${discountAmount.toFixed(2)}
+                </span>
+              </div>
+            )}
             <div className="flex justify-between py-2">
               <span className="font-medium">Tax (8%):</span>
               <span>${invoiceDetails.tax.toFixed(2)}</span>
@@ -335,6 +388,13 @@ export default function InvoicePage({
         onOpenChange={setIsStatusDialogOpen}
         onChangeStatus={handleStatusChange}
         currentStatus={invoiceDetails.status}
+      />
+
+      <DiscountDialog
+        open={isDiscountDialogOpen}
+        onOpenChange={setIsDiscountDialogOpen}
+        onApplyDiscount={handleApplyDiscount}
+        currentDiscount={invoiceDetails.discount}
       />
     </div>
   );

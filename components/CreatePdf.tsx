@@ -6,6 +6,8 @@ import "jspdf-autotable";
 import { useMemo } from "react";
 import { Button } from "./ui/button";
 import { File } from "lucide-react";
+import { getDiscountAmount } from "@/utils/getDiscountAmount";
+import { formatUSD } from "@/utils/formatDollar";
 
 type Props = {
   invoiceDetails: Invoice;
@@ -24,13 +26,28 @@ export default function CreatePdf({
       0,
     );
   }, [invoiceItems]);
+
+  const discount = useMemo(() => {
+    if (!invoiceDetails) return 0;
+    return invoiceDetails.discount;
+  }, [invoiceDetails]);
+
+  const discountAmount = useMemo(() => {
+    if (!invoiceDetails || !invoiceDetails.discount) return 0;
+
+    const amount = getDiscountAmount(subTotal, discount || 0);
+    return amount;
+  }, [invoiceDetails, subTotal, discount]);
   const total = useMemo(() => {
     if (!invoiceItems) return 0;
-    return invoiceItems.reduce(
+    const t = invoiceItems.reduce(
       (acc, item) => acc + item.rate * item.quantity,
       0,
     );
-  }, [invoiceItems]);
+    if (discount && discount > 0) return t - (t * discount) / 100;
+    // Apply discoun
+    return t;
+  }, [invoiceItems, discount]);
 
   const drawLogo = (
     doc: jsPDF,
@@ -117,22 +134,35 @@ export default function CreatePdf({
 
     const rightAlignX = pageWidth - 16; // Adjust this value for padding
 
-    doc.text(`Subtotal: $${subTotal.toFixed(2)}`, rightAlignX, finalY + 10, {
+    doc.text(`Subtotal: ${formatUSD(subTotal)}`, rightAlignX, finalY + 10, {
       align: "right",
     });
-    doc.text(
-      `Tax (8%): $${invoiceDetails.tax.toFixed(2)}`,
-      rightAlignX,
-      finalY + 20,
-      { align: "right" },
-    );
+    if (discountAmount > 0) {
+      doc.setFontSize(8);
+      doc.setTextColor(230, 0, 0);
+      doc.text(
+        `Discount (${discount}%): -$${discountAmount.toFixed(2)}`,
+        rightAlignX,
+        finalY + 15,
+        { align: "right" },
+      );
+    }
+    doc.setTextColor(0, 0, 0); // Reset text color
+
+    // doc.text(
+    //   `Tax (8%): $${invoiceDetails.tax.toFixed(2)}`,
+    //   rightAlignX,
+    //   finalY + 20,
+    //   { align: "right" },
+    // );
     doc.setFontSize(14);
-    doc.text(`Total: $${total.toFixed(2)}`, rightAlignX, finalY + 30, {
+    doc.text(`Total: ${formatUSD(total)}`, rightAlignX, finalY + 22, {
       align: "right",
     });
 
     // Add notes
     doc.setFontSize(10);
+
     doc.text(
       "Thank you for your business!:",
       pageWidth / 2 - 10,

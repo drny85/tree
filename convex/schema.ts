@@ -33,6 +33,7 @@ export default defineSchema({
     clientId: v.id("clients"),
     clerkUserId: v.string(),
     invoiceNumber: v.number(),
+    discount: v.optional(v.number()),
     date: v.string(),
     status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
     dueDate: v.optional(v.string()),

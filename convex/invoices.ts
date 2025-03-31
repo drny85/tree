@@ -19,6 +19,7 @@ export const createInvoice = mutation({
     status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
     tax: v.number(),
     clerkUserId: v.string(),
+    discount: v.number(),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("invoices", args);
@@ -45,19 +46,6 @@ export const getInvoicesWithItems = query({
     return invoicesWithItemsAndClientName;
   },
 });
-// const invoices = await ctx.db.query("invoices").collect();
-// const invoiceItems = await ctx.db.query("items").collect();
-// const invoiceWithTotalItemsAmount = invoices.map((invoice) => {
-//   const items = invoiceItems.filter(
-//     (item) => item.invoiceId === invoice._id,
-//   );
-//   const amount = items.reduce(
-//     (acc, item) => acc + item.rate * item.quantity,
-//     0,
-//   );
-//   return { ...invoice, amount: amount };
-// });
-// return invoiceWithTotalItemsAmount;
 
 export const invoices = query({
   handler: async (ctx) => {
@@ -93,6 +81,7 @@ export const updateInvoice = mutation({
     dueDate: v.optional(v.string()),
     status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
     tax: v.number(),
+    discount: v.number(),
   },
   handler: async (ctx, args) => {
     const existingInvoice = await ctx.db.get(args.id);
@@ -106,6 +95,7 @@ export const updateInvoice = mutation({
       dueDate: args.dueDate,
       status: args.status,
       tax: args.tax,
+      discount: args.discount,
     });
   },
 });

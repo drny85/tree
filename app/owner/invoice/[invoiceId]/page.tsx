@@ -43,6 +43,8 @@ export default function InvoicePage() {
     id: invoiceDetails?.clientId!,
   });
 
+  console.log("Details", invoiceDetails);
+
   const handleDialogChange = (open: boolean) => {
     setIsEditItemDialogOpen(open);
     if (!open) {
@@ -75,6 +77,7 @@ export default function InvoicePage() {
     setInvoiceStatus(status);
 
     updateInvoice({
+      discount: invoiceDetails?.discount!,
       clerkUserId: invoiceDetails?.clerkUserId!,
       clientId: invoiceDetails?.clientId!,
       date: invoiceDetails?.date!,
@@ -183,7 +186,7 @@ export default function InvoicePage() {
             <span>{invoiceDetails.invoiceNumber}</span>
           </div>
           <div>
-            <span className="font-semibold">Staus: </span>
+            <span className="font-semibold">Status: </span>
             <span className="capitalize">{invoiceDetails.status}</span>
           </div>
           <div>
@@ -287,10 +290,16 @@ export default function InvoicePage() {
       {invoiceItems && invoiceItems.length > 0 && (
         <div className="flex justify-end">
           <div className="w-64">
-            <div className="flex justify-between py-2">
-              <span className="font-medium">Subtotal:</span>
-              <span>${subTotal.toFixed(2)}</span>
-            </div>
+            {invoiceDetails &&
+              invoiceDetails?.discount &&
+              invoiceDetails.discount > 0 && (
+                <div className="flex justify-between py-2">
+                  <span className="font-medium">
+                    Discount ({invoiceDetails.discount}%):
+                  </span>
+                  <span>${subTotal.toFixed(2)}</span>
+                </div>
+              )}
             <div className="flex justify-between py-2">
               <span className="font-medium">Tax (8%):</span>
               <span>${invoiceDetails.tax.toFixed(2)}</span>

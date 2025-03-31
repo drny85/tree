@@ -26,6 +26,7 @@ export type Invoice = {
   date: string;
   dueDate?: string;
   tax: number;
+  discount?: number;
 };
 
 export const companyInfo = {

@@ -22,6 +22,7 @@ export default function ClientPage() {
     try {
       if (!client || !invoices || !userId) return;
       const invoice = await createInvoice({
+        discount: 0,
         clerkUserId: userId,
         invoiceNumber: invoices?.length + 1 || 0,
         clientId: client._id,
