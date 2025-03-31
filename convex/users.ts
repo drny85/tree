@@ -22,6 +22,13 @@ export const current = query({
   },
 });
 
+export const user = query({
+  args: { clerkUserId: v.string() },
+  handler: async (ctx, { clerkUserId }) => {
+    return await userByClerkUserId(ctx, clerkUserId);
+  },
+});
+
 export const deleteFromClerk = internalMutation({
   args: { clerkUserId: v.string() },
   handler: async (ctx, { clerkUserId }) => {
@@ -43,6 +50,7 @@ export const upsertFromClerk = internalMutation({
       firstName: data.first_name ?? undefined,
       lastName: data.last_name ?? undefined,
       imageUrl: data.image_url ?? undefined,
+      role: data.public_metadata.role ?? "user",
     };
 
     const user = await userByClerkUserId(ctx, data.id);

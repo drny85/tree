@@ -173,7 +173,7 @@ const Actions = ({ invoice }: { invoice: Invoice }) => {
   const deleteInvoice = useMutation(api.invoices.deleteInvoice);
   return (
     <div className="flex items-center space-x-2">
-      <Link href={`/protected/invoice/${invoice._id}/${invoice.clientId}`}>
+      <Link href={`/owner/invoice/${invoice._id}/${invoice.clientId}`}>
         <Button>View</Button>
       </Link>
 

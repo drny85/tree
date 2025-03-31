@@ -114,10 +114,7 @@ export function ClientsTable() {
 
         return (
           <div className="flex items-center gap-3 md:w-fit w-full justify-betweent px-10 md:px-4">
-            <Link
-              className="font-medium"
-              href={`/protected/client/${client._id}`}
-            >
+            <Link className="font-medium" href={`/owner/client/${client._id}`}>
               View
             </Link>
             <DropdownMenu>

@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { getCurrentUser } from "./users";
 
 export const getInvoice = query({
   args: { id: v.id("invoices") },
@@ -17,9 +18,58 @@ export const createInvoice = mutation({
     dueDate: v.optional(v.string()),
     status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
     tax: v.number(),
+    clerkUserId: v.string(),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("invoices", args);
+  },
+});
+
+export const getInvoicesWithItems = query({
+  handler: async (ctx) => {
+    const invoices = await ctx.db.query("invoices").collect();
+    const invoicesWithItemsAndClientName = await Promise.all(
+      invoices.map(async (invoice) => {
+        const items = await ctx.db
+          .query("items")
+          .filter((q) => q.eq(q.field("invoiceId"), invoice._id))
+          .collect();
+        const client = await ctx.db.get(invoice.clientId);
+        return {
+          ...invoice,
+          items,
+          clientName: client?.name || "",
+        };
+      }),
+    );
+    return invoicesWithItemsAndClientName;
+  },
+});
+// const invoices = await ctx.db.query("invoices").collect();
+// const invoiceItems = await ctx.db.query("items").collect();
+// const invoiceWithTotalItemsAmount = invoices.map((invoice) => {
+//   const items = invoiceItems.filter(
+//     (item) => item.invoiceId === invoice._id,
+//   );
+//   const amount = items.reduce(
+//     (acc, item) => acc + item.rate * item.quantity,
+//     0,
+//   );
+//   return { ...invoice, amount: amount };
+// });
+// return invoiceWithTotalItemsAmount;
+
+export const invoices = query({
+  handler: async (ctx) => {
+    const user = await getCurrentUser(ctx);
+    if (!user) {
+      throw new Error("Not authenticated");
+    }
+    const invoices = await ctx.db
+      .query("invoices")
+      .filter((q) => q.eq(q.field("clerkUserId"), user.clerkUserId))
+      .collect();
+    return invoices;
   },
 });
 

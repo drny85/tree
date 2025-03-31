@@ -1,9 +1,19 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher(["/server", "/protected(.*)"]);
+const isProtectedRoute = createRouteMatcher(["/owner", "/protected"]);
+const isOwnerRoute = createRouteMatcher(["/owner(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) await auth.protect();
+  if (isProtectedRoute(req)) {
+    auth.protect();
+    const { sessionClaims } = await auth();
+
+    if (isOwnerRoute(req) && sessionClaims?.metadata.role !== "owner") {
+      const url = new URL("/main", req.url);
+      return NextResponse.redirect(url);
+    }
+  }
 });
 
 export const config = {

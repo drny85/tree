@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 export default function ExplorePage() {
   const router = useRouter();
   return (
-    <div className="min-h-screen">
+    <div className="min-h-svh">
       <div className="relative min-h-svh flex items-center">
         <Image
           src="/tree1.png"
@@ -31,7 +31,7 @@ export default function ExplorePage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
             >
-              BREIDYS' TREE CARE,
+              BREIDYS' TREE CARE
             </motion.h1>
             <motion.h2
               className="text-3xl font-light text-white mb-6"

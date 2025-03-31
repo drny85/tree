@@ -75,6 +75,7 @@ export default function InvoicePage() {
     setInvoiceStatus(status);
 
     updateInvoice({
+      clerkUserId: invoiceDetails?.clerkUserId!,
       clientId: invoiceDetails?.clientId!,
       date: invoiceDetails?.date!,
       status,

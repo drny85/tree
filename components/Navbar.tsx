@@ -1,11 +1,14 @@
 import { companyInfo } from "@/typing";
 import { UserButton } from "@clerk/nextjs";
-import { Users } from "lucide-react";
+import { DollarSign, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
+import { checkRole } from "@/utils/roles";
 
-export function Navbar() {
+export async function Navbar() {
+  const isOwner = await checkRole("owner");
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 dark:bg-slate-900/80 dark:border-slate-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,7 +24,7 @@ export function Navbar() {
                 className="object-contain rounded-full"
               />
             </div>
-            <Link href="/protected">
+            <Link href={isOwner ? "/owner" : "/protected"}>
               <span className="text-xl font-semibold text-gray-900 dark:text-white hidden md:flex  hover:cursor-pointer">
                 {companyInfo.name}
               </span>
@@ -31,7 +34,14 @@ export function Navbar() {
           {/* Navigation Links and User Button */}
           <div className="flex items-center space-x-6">
             <Link
-              href="/protected"
+              href={isOwner ? "/owner/earnings" : "/protected"}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+            >
+              <DollarSign size={20} />
+              <span>Earning</span>
+            </Link>
+            <Link
+              href={isOwner ? "/owner" : "/protected"}
               className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
             >
               <Users size={20} />

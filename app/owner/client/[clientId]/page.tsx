@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { formatPhone } from "@/lib/formatPhone";
+import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { notFound, useParams, useRouter } from "next/navigation";
 
 export default function ClientPage() {
+  const { userId } = useAuth();
   const params = useParams();
   const { clientId } = params as { clientId: Id<"clients"> };
   const router = useRouter();
@@ -18,8 +20,9 @@ export default function ClientPage() {
   const onCreateInvoice = async () => {
     // TODO: Implement this
     try {
-      if (!client || !invoices) return;
+      if (!client || !invoices || !userId) return;
       const invoice = await createInvoice({
+        clerkUserId: userId,
         invoiceNumber: invoices?.length + 1 || 0,
         clientId: client._id,
         status: "draft",
@@ -28,7 +31,7 @@ export default function ClientPage() {
       });
 
       if (invoice) {
-        router.push(`/protected/invoice/${invoice}/${clientId}`);
+        router.push(`/owner/invoice/${invoice}/${clientId}`);
       }
     } catch (error) {
       console.error(error);

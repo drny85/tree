@@ -1,16 +1,20 @@
 "use client";
 
-import Image from "next/image";
-import { SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { SignInButton, useAuth, UserButton } from "@clerk/nextjs";
+import Image from "next/image";
 
-import { companyInfo } from "@/typing";
-import { Authenticated, Unauthenticated } from "convex/react";
-import Link from "next/link";
 import { ContactForm } from "@/components/ContactForm";
 import { ModeToggle } from "@/components/ModeToggle";
+import { api } from "@/convex/_generated/api";
+import { companyInfo } from "@/typing";
+import { Authenticated, Unauthenticated, useQuery } from "convex/react";
+import Link from "next/link";
 
 export default function Home() {
+  const { userId } = useAuth();
+
+  const user = useQuery(api.users.user, { clerkUserId: userId ?? "" });
   return (
     <div className="min-h-svh flex flex-col max-w-7xl mx-auto">
       <header className="sticky top-0 z-10 bg-green-600 p-4 border-b-2 border-green-700 flex flex-row justify-between items-center text-white">
@@ -32,8 +36,11 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-5">
           <Authenticated>
-            <Link href={"/protected"} className="font-medium">
-              Admin
+            <Link
+              href={user?.role === "owner" ? "/owner" : "/protected"}
+              className="font-medium"
+            >
+              Dashboard
             </Link>
             <UserButton />
           </Authenticated>
@@ -118,9 +125,11 @@ export default function Home() {
           <div className="mt-8 mb-8">
             <ContactForm />
           </div>
-          <Button variant="outline" className="mt-4">
-            Get a Quote
-          </Button>
+          <Link href={"/protected/quote"}>
+            <Button variant="outline" className="mt-4">
+              Get a Quote
+            </Button>
+          </Link>
         </section>
       </main>
       <footer className="bg-green-600 p-4 text-center text-white">

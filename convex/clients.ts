@@ -1,6 +1,6 @@
-import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { current, getCurrentUser, userByClerkUserId } from "./users";
+import { mutation, query } from "./_generated/server";
+import { getCurrentUser } from "./users";
 
 export const getClients = query({
   args: {},
@@ -27,7 +27,7 @@ export const createClient = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getCurrentUser(ctx);
-    if (!user) {
+    if (!user || user.role !== "owner") {
       throw new Error("Not authenticated");
     }
     await ctx.db.insert("clients", { ...args, clerkUserId: user.clerkUserId });
@@ -37,6 +37,10 @@ export const createClient = mutation({
 export const getClient = query({
   args: { id: v.id("clients") },
   handler: async (ctx, args) => {
+    const user = await getCurrentUser(ctx);
+    if (!user || user.role !== "owner") {
+      throw new Error("Not authenticated");
+    }
     return await ctx.db.get(args.id);
   },
 });
@@ -64,6 +68,10 @@ export const updateClient = mutation({
 export const deleteClient = mutation({
   args: { id: v.id("clients") },
   handler: async (ctx, args) => {
+    const user = await getCurrentUser(ctx);
+    if (!user || user.role !== "owner") {
+      throw new Error("Not authenticated");
+    }
     await ctx.db.delete(args.id);
   },
 });

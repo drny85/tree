@@ -12,6 +12,7 @@ export default defineSchema({
     email: v.string(),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
+    role: v.optional(v.any()),
   }).index("byClerkUserId", ["clerkUserId"]),
   clients: defineTable({
     name: v.string(),
@@ -27,9 +28,10 @@ export default defineSchema({
     quantity: v.number(),
     rate: v.number(),
     amount: v.number(),
-  }).index("by_invoice", ["invoiceId"]),
+  }).index("by_invoiceId", ["invoiceId"]),
   invoices: defineTable({
     clientId: v.id("clients"),
+    clerkUserId: v.string(),
     invoiceNumber: v.number(),
     date: v.string(),
     status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
