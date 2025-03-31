@@ -1,9 +1,7 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/utils/formatDate";
-import { Invoice } from "@/typing";
-import { Doc } from "@/convex/_generated/dataModel";
+import { ColumnDef } from "@tanstack/react-table";
 
 export type TableInvoice = {
   amount: number;

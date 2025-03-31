@@ -45,6 +45,7 @@ export default function QuotePage() {
       toast.error("Something went wrong", {
         description: "Please try again later.",
       });
+      console.error(error);
     }
   }
 
