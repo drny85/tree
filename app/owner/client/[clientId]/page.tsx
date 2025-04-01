@@ -1,6 +1,6 @@
 "use client";
 import { DataTable } from "@/components/earnings/data-table";
-import { xcolumns } from "@/components/tables/incoiceColunms";
+import { invoicesColumns } from "@/components/tables";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -71,12 +71,17 @@ export default function ClientPage() {
           <p className="font-medium">Invoices Total:</p>
           <p>{invoices.length}</p>
         </div>
-        <Button variant="outline" size="lg" onClick={onCreateInvoice}>
+        <Button
+          className="mb-2 md:mb-0 bg-green-600 hover:bg-green-700 text-white hover:text-white hover:cursor-pointer"
+          variant="outline"
+          size="lg"
+          onClick={onCreateInvoice}
+        >
           New Invoice
         </Button>
       </div>
       {/* <ClientInvoices invoices={invoices} /> */}
-      <DataTable data={invoices} columns={xcolumns} />
+      <DataTable data={invoices} columns={invoicesColumns} />
       {/* Search Input */}
 
       {/* List of Invoices */}

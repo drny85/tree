@@ -3,13 +3,14 @@
 import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
 import { useClientStore } from "@/stores/useClientStore";
-import { Invoice } from "@/typing";
 import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMutation } from "convex/react";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { toast } from "sonner";
+import { ConfirmDialog } from "../ConfirmDialog";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -18,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-export const xcolumns: ColumnDef<Doc<"invoices">>[] = [
+export const invoicesColumns: ColumnDef<Doc<"invoices">>[] = [
   {
     accessorKey: "invoiceNumber",
     header: "#",
@@ -155,30 +156,48 @@ export const createClientColumns = ({
   },
 ];
 
-const Actions = ({ invoice }: { invoice: Invoice }) => {
+const Actions = ({ invoice }: { invoice: Doc<"invoices"> }) => {
+  const [itemToDelete, setItemToDelete] = useState<Doc<"invoices"> | null>();
   const deleteInvoice = useMutation(api.invoices.deleteInvoice);
+
   return (
-    <div className="flex items-center space-x-2">
-      <Link href={`/owner/invoice/${invoice._id}/${invoice.clientId}`}>
-        <Button>View</Button>
-      </Link>
-
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => {
-          if (!invoice) return;
-          if (invoice.status === "paid") {
-            toast.error("Cannot delete paid invoice");
-            return;
+    <>
+      <ConfirmDialog
+        open={!!itemToDelete}
+        onOpenChange={(open) => !open && setItemToDelete(null)}
+        title="Delete Item"
+        description="Are you sure you want to delete this item? This action cannot be undone."
+        onConfirm={async () => {
+          if (itemToDelete) {
+            // deleteClient({ id: itemToDelete._id });
+            await deleteInvoice({ id: itemToDelete._id });
+            toast.success("Item deleted successfully");
+            setItemToDelete(null);
           }
-
-          deleteInvoice({ id: invoice._id });
-          toast.success("Invoice deleted");
         }}
-      >
-        Delete
-      </Button>
-    </div>
+      />
+
+      <div className="flex items-center space-x-2">
+        <Link href={`/owner/invoice/${invoice._id}/${invoice.clientId}`}>
+          <Button>View</Button>
+        </Link>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            if (!invoice) return;
+            if (invoice.status === "paid") {
+              toast.error("Cannot delete paid invoice");
+              return;
+            }
+
+            setItemToDelete(invoice);
+          }}
+        >
+          Delete
+        </Button>
+      </div>
+    </>
   );
 };
