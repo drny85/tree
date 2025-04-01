@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Client } from "@/typing";
+import { useClientStore } from "@/stores/useClientStore";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -37,17 +38,9 @@ const formSchema = z.object({
   notes: z.string().optional(),
 });
 
-export function EditClientDialog({
-  client,
-  open,
-  onOpenChange,
-}: {
-  client: Client;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
+export function EditClientDialog({ client }: { client: Client }) {
   const updateClient = useMutation(api.clients.updateClient);
-
+  const { setSelectedClient } = useClientStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,15 +63,20 @@ export function EditClientDialog({
         notes: values.notes || undefined,
       });
       toast.success("Client updated successfully!");
-      onOpenChange(false);
+
+      setSelectedClient(null);
     } catch (error) {
       toast.error("Failed to update client");
       console.error(error);
     }
   }
 
+  const handleClose = () => {
+    setSelectedClient(null);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={client !== null} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Client</DialogTitle>
@@ -189,7 +187,7 @@ export function EditClientDialog({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => onOpenChange(false)}
+                onClick={() => setSelectedClient(null)}
               >
                 Cancel
               </Button>

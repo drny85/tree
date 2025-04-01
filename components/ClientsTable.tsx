@@ -143,11 +143,7 @@ export function ClientsTable() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <EditClientDialog
-              client={client}
-              open={isEditDialogOpen}
-              onOpenChange={setIsEditDialogOpen}
-            />
+            <EditClientDialog client={client} />
           </div>
         );
       },

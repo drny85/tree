@@ -1,14 +1,22 @@
 "use client";
 
+import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
+import { useClientStore } from "@/stores/useClientStore";
 import { Invoice } from "@/typing";
 import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMutation } from "convex/react";
+import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { api } from "@/convex/_generated/api";
+import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 export const xcolumns: ColumnDef<Doc<"invoices">>[] = [
   {
@@ -51,6 +59,103 @@ export const xcolumns: ColumnDef<Doc<"invoices">>[] = [
     cell: ({ row }) => {
       const invoice = row.original;
       return <Actions invoice={invoice} />;
+    },
+  },
+];
+interface ClientColumnActions {
+  onDelete: (client: Doc<"clients">) => void;
+}
+
+export const createClientColumns = ({
+  onDelete,
+}: ClientColumnActions): ColumnDef<Doc<"clients">>[] => [
+  {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          NAME
+          {column.getIsSorted() === "asc"
+            ? " ↑"
+            : column.getIsSorted() === "desc"
+              ? " ↓"
+              : ""}
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="font-medium capitalize">{row.getValue("name")}</div>
+    ),
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => (
+      <div className="text-muted-foreground hidden md:table-cell">
+        {row.getValue("email") || "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "phone",
+    header: "Phone",
+    cell: ({ row }) => (
+      <div className="text-muted-foreground hidden md:table-cell">
+        {row.getValue("phone")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "address",
+    header: "Address",
+    cell: ({ row }) => (
+      <div className="text-muted-foreground capitalize hidden md:table-cell">
+        {row.getValue("address") || "-"}
+      </div>
+    ),
+  },
+
+  {
+    id: "actions",
+    header: "",
+    cell: ({ row }) => {
+      const client = row.original;
+
+      return (
+        <div className="flex items-center gap-3 md:w-fit w-full justify-betweent px-10 md:px-4">
+          <Link className="font-medium" href={`/owner/client/${client._id}`}>
+            View
+          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal size={38} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => {
+                  useClientStore.getState().setSelectedClient(client);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  onDelete(client);
+                }}
+                className="text-red-600"
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
     },
   },
 ];
