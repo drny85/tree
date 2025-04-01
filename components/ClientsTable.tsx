@@ -189,7 +189,12 @@ export function ClientsTable() {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className={cn("border-b border-gray-200")}
+                className={cn(
+                  "hidden sm:table-row bg-slate-200 dark:bg-slate-800",
+                  headerGroup.headers[0].column.columnDef.header === "Client"
+                    ? "hidden sm:table-row"
+                    : "",
+                )}
               >
                 {headerGroup.headers.map((header) => {
                   return (
@@ -197,11 +202,6 @@ export function ClientsTable() {
                       key={header.id}
                       className={cn(
                         "py-3.5 px-4 text-sm font-medium text-gray-700 uppercase tracking-wide",
-                        {
-                          "hidden md:table-cell": !["name", "actions"].includes(
-                            header.id,
-                          ),
-                        },
                       )}
                     >
                       {header.isPlaceholder
@@ -227,7 +227,13 @@ export function ClientsTable() {
                   )}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className={cn("py-3 px-4")}>
+                    <TableCell
+                      key={cell.id}
+                      className={cn("py-3 px-4", {
+                        "hidden sm:table-cell":
+                          cell.column.columnDef.header === "Status",
+                      })}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

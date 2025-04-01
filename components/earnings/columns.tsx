@@ -7,9 +7,17 @@ export type TableInvoice = {
   amount: number;
   status: string;
   date: string;
+  name: string;
 };
 
 export const columns: ColumnDef<TableInvoice>[] = [
+  {
+    accessorKey: "name",
+    header: "Client",
+    cell: ({ row }) => {
+      return <div className="capitalize">{row.getValue("name")}</div>;
+    },
+  },
   {
     accessorKey: "date",
     header: "Date",
@@ -37,8 +45,8 @@ export const columns: ColumnDef<TableInvoice>[] = [
             status === "paid"
               ? "text-green-600"
               : status === "draff"
-                ? "text-yellow-600"
-                : "text-red-600"
+                ? "text-slate-600"
+                : "text-blue-600"
           }`}
         >
           {status}

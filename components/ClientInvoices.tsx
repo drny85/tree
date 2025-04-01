@@ -39,7 +39,7 @@ function ClientInvoices({ invoices }: Props) {
   const columns: ColumnDef<Invoice>[] = [
     {
       accessorKey: "invoiceNumber",
-      header: "Invoice #",
+      header: "#",
     },
     {
       accessorKey: "date",

@@ -66,7 +66,7 @@ export function EditItemDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent aria-description="Invoice Item">
         <DialogHeader>
           <DialogTitle>Edit Invoice Item</DialogTitle>
         </DialogHeader>

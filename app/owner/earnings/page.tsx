@@ -67,6 +67,7 @@ export default function EarningsDashboard() {
     return data
       .map((a) => {
         return {
+          name: a.clientName,
           amount: a.items.reduce(
             (sum, item) => sum + item.rate * item.quantity,
             0,

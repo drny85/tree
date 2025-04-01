@@ -21,6 +21,7 @@ export async function Navbar() {
                 alt="Company Logo"
                 fill
                 sizes="100%"
+                priority
                 className="object-contain rounded-full"
               />
             </div>

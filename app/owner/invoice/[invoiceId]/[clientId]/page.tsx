@@ -11,6 +11,7 @@ import { Doc, Id } from "@/convex/_generated/dataModel";
 import { formatPhone } from "@/lib/formatPhone";
 import { cn } from "@/lib/utils";
 import { companyInfo, InvoiceItem } from "@/typing";
+import { formatUSD } from "@/utils/formatDollar";
 import { getDiscountAmount } from "@/utils/getDiscountAmount";
 import { useMutation, useQuery } from "convex/react";
 import { format } from "date-fns";
@@ -201,7 +202,11 @@ export default function InvoicePage({
           </p>
         </div>
       </div>
-      <div className="flex justify-end my-2">
+      <div className="flex justify-between my-2">
+        <div>
+          <span className="font-semibold">Staus: </span>
+          <span className="capitalize">{invoiceDetails.status}</span>
+        </div>
         <Button
           variant="outline"
           onClick={() => setIsDiscountDialogOpen(true)}
@@ -218,10 +223,7 @@ export default function InvoicePage({
             <span className="font-semibold">Invoice Number: </span>
             <span>{invoiceDetails.invoiceNumber}</span>
           </div>
-          <div>
-            <span className="font-semibold">Staus: </span>
-            <span className="capitalize">{invoiceDetails.status}</span>
-          </div>
+
           <div>
             <span className="font-semibold">Date: </span>
             <span>{format(invoiceDetails.date, "PP")}</span>
@@ -273,7 +275,9 @@ export default function InvoicePage({
               <th className="py-2 px-4 text-left font-semibold ">
                 Description
               </th>
-              <th className="py-2 px-4 text-right font-semibold ">Quantity</th>
+              <th className="py-2 px-4 text-right font-semibold hidden sm:table-cell">
+                Quantity
+              </th>
               <th className="py-2 px-4 text-right font-semibold ">Rate</th>
               <th className="py-2 px-4 text-right font-semibold ">Amount</th>
               <th className="py-2 px-4 text-right font-semibold "></th>
@@ -285,7 +289,9 @@ export default function InvoicePage({
                 <td className="py-3 px-4 capitalize italic">
                   {item.description}
                 </td>
-                <td className="py-3 px-4 text-right">{item.quantity}</td>
+                <td className="py-3 px-4 text-right hidden sm:table-cell">
+                  {item.quantity}
+                </td>
                 <td className="py-3 px-4 text-right">
                   ${item.rate.toFixed(2)}
                 </td>
@@ -325,7 +331,7 @@ export default function InvoicePage({
           <div className="w-64">
             <div className="flex justify-between py-2">
               <span className="font-medium">Subtotal:</span>
-              <span>${subTotal.toFixed(2)}</span>
+              <span>{formatUSD(subTotal)}</span>
             </div>
             {discount && discount > 0 && (
               <div className="flex justify-between py-2">
@@ -333,17 +339,14 @@ export default function InvoicePage({
                   Discount ({invoiceDetails.discount}%):
                 </span>
                 <span className="font-sm text-red-400">
-                  ${discountAmount.toFixed(2)}
+                  -{formatUSD(discountAmount)}
                 </span>
               </div>
             )}
-            <div className="flex justify-between py-2">
-              <span className="font-medium">Tax (8%):</span>
-              <span>${invoiceDetails.tax.toFixed(2)}</span>
-            </div>
+
             <div className="flex justify-between py-2 border-t border-gray-200 font-bold">
               <span>Total:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>{formatUSD(total)}</span>
             </div>
           </div>
         </div>
