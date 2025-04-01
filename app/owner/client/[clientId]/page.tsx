@@ -1,5 +1,4 @@
 "use client";
-import ClientInvoices from "@/components/ClientInvoices";
 import { DataTable } from "@/components/earnings/data-table";
 import { xcolumns } from "@/components/tables/incoiceColunms";
 import { Button } from "@/components/ui/button";

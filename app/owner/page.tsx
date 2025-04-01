@@ -12,7 +12,7 @@ import { User } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
-function page() {
+function Page() {
   const clients = useQuery(api.clients.getClients);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { selectedClient: client } = useClientStore();
@@ -44,4 +44,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
