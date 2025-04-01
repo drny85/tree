@@ -52,9 +52,6 @@ export function DataTable<TData, TValue>({
               key={headerGroup.id}
               className={cn(
                 "hidden sm:table-row bg-slate-200 dark:bg-slate-800",
-                headerGroup.headers[0].column.columnDef.header === "Client"
-                  ? "hidden sm:table-row"
-                  : "",
               )}
             >
               {headerGroup.headers.map((header) => (

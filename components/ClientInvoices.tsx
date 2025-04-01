@@ -40,16 +40,18 @@ function ClientInvoices({ invoices }: Props) {
     {
       accessorKey: "invoiceNumber",
       header: "#",
+      enableSorting: true,
     },
     {
       accessorKey: "date",
       header: "Date",
+      enableSorting: true,
       cell: ({ row }) => format(row.getValue("date"), "PP"),
     },
-
     {
       accessorKey: "status",
       header: "Status",
+      enableSorting: true,
       cell: ({ row }) => {
         const status = row.getValue("status");
         return (
