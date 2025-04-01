@@ -69,7 +69,7 @@ export function AddClientForm({ onOpenChange }: Props) {
   }
 
   return (
-    <div className="max-w-xl p-6 bg-white rounded-lg shadow-md dark:bg-slate-600">
+    <div className="max-w-xl p-6 bg-white rounded-lg shadow-md dark:bg-slate-800">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -179,7 +179,7 @@ export function AddClientForm({ onOpenChange }: Props) {
             name="notes"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block text-sm font-medium text-gray-700">
+                <FormLabel className="block text-sm font-medium">
                   Notes
                 </FormLabel>
                 <FormControl>
@@ -238,7 +238,7 @@ function AutocompleteComponent({ field }: { field: any }) {
     <div className="relative w-full">
       <div className="relative">
         <Input
-          placeholder="123 Main St, City, State"
+          placeholder="Start typing an address"
           value={field.value || value || ""}
           onChange={handleInput}
           name={field.name}

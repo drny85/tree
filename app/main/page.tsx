@@ -20,7 +20,7 @@ export default function Home() {
       <header className="sticky top-0 z-10 bg-green-600 p-4 border-b-2 border-green-700 flex flex-row justify-between items-center text-white">
         <div className="flex items-center space-x-2">
           <Image
-            src="/logo.png"
+            src="/main-logo.png"
             alt="Breidys Logo"
             width={40}
             height={40}
@@ -36,6 +36,7 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-5">
           <Authenticated>
+            <ModeToggle className="dark:bg-primary bg-green-600" />
             <Link
               href={user?.role === "owner" ? "/owner" : "/protected"}
               className="font-medium"
