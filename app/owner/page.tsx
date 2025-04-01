@@ -32,7 +32,7 @@ function Page() {
       <div className="flex justify-end mb-2 md:mb-0">
         <Button variant="default" onClick={() => setIsAddDialogOpen(true)}>
           <User size={36} />
-          Add Client
+          Add New Client
         </Button>
       </div>
       <DataTable columns={columns} data={clients || []} />

@@ -21,7 +21,7 @@ export function AddClient({ open, onOpenChange }: AddClientFormProps) {
           <DialogTitle>
             <div className="flex items-center gap-2">
               <User size={30} />
-              Add New Client
+              <span>Adding New Client</span>
             </div>
           </DialogTitle>
         </DialogHeader>

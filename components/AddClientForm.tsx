@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Save } from "lucide-react";
+import { LoadScriptNext } from "@react-google-maps/api";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -69,9 +70,6 @@ export function AddClientForm({ onOpenChange }: Props) {
 
   return (
     <div className="max-w-xl p-6 bg-white rounded-lg shadow-md dark:bg-slate-700">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-slate-300">
-        Add New Client
-      </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -161,11 +159,15 @@ export function AddClientForm({ onOpenChange }: Props) {
                   Address
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="123 Main St, City, State"
-                    {...field}
-                    className="mt-1 block w-full capitalize rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
+                  <LoadScriptNext
+                    googleMapsApiKey={
+                      process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
+                    }
+                    libraries={["places"]}
+                    loadingElement={<div>Loading...</div>}
+                  >
+                    <AutocompleteComponent field={field} />
+                  </LoadScriptNext>
                 </FormControl>
                 <FormMessage className="text-red-500 text-xs" />
               </FormItem>
@@ -204,6 +206,85 @@ export function AddClientForm({ onOpenChange }: Props) {
           </div>
         </form>
       </Form>
+    </div>
+  );
+}
+
+// Remove the useEffect in the main component that has the field reference error
+
+import usePlacesAutocomplete from "use-places-autocomplete";
+
+function AutocompleteComponent({ field }: { field: any }) {
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete();
+
+  const handleInput = (e: any) => {
+    setValue(e.target.value);
+    field.onChange(e.target.value);
+  };
+
+  const handleSelect = async (address: string) => {
+    setValue(address, false);
+    field.onChange(address);
+    clearSuggestions();
+  };
+
+  return (
+    <div className="relative w-full">
+      <div className="relative">
+        <Input
+          placeholder="123 Main St, City, State"
+          value={field.value || value || ""}
+          onChange={handleInput}
+          name={field.name}
+          onBlur={field.onBlur}
+          disabled={!ready}
+          className="mt-1 block w-full capitalize rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+        />
+        {field.value && (
+          <button
+            type="button"
+            onClick={() => {
+              setValue("");
+              field.onChange("");
+              clearSuggestions();
+            }}
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+            aria-label="Clear input"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        )}
+      </div>
+      {status === "OK" && (
+        <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          {data.map(({ place_id, description }) => (
+            <li
+              key={place_id}
+              onClick={() => handleSelect(description)}
+              className="relative cursor-pointer select-none py-2 px-3 text-gray-900 hover:bg-indigo-100 hover:text-indigo-900"
+            >
+              {description}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
