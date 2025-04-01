@@ -69,7 +69,7 @@ export function AddClientForm({ onOpenChange }: Props) {
   }
 
   return (
-    <div className="max-w-xl p-6 bg-white rounded-lg shadow-md dark:bg-slate-700">
+    <div className="max-w-xl p-6 bg-white rounded-lg shadow-md dark:bg-slate-600">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -77,7 +77,7 @@ export function AddClientForm({ onOpenChange }: Props) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block text-sm font-medium text-gray-700 ">
+                <FormLabel className="block text-sm font-medium">
                   Full Name*
                 </FormLabel>
                 <FormControl>
@@ -97,7 +97,7 @@ export function AddClientForm({ onOpenChange }: Props) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block text-sm font-medium text-gray-700">
+                <FormLabel className="block text-sm font-medium">
                   Email
                 </FormLabel>
                 <FormControl>
@@ -117,7 +117,7 @@ export function AddClientForm({ onOpenChange }: Props) {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block text-sm font-medium text-gray-700">
+                <FormLabel className="block text-sm font-medium">
                   Phone Number*
                 </FormLabel>
                 <FormControl>
@@ -155,7 +155,7 @@ export function AddClientForm({ onOpenChange }: Props) {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block text-sm font-medium text-gray-700">
+                <FormLabel className="block text-sm font-medium">
                   Address
                 </FormLabel>
                 <FormControl>
