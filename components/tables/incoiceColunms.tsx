@@ -78,11 +78,6 @@ export const createClientColumns = ({
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           NAME
-          {column.getIsSorted() === "asc"
-            ? " ↑"
-            : column.getIsSorted() === "desc"
-              ? " ↓"
-              : ""}
         </Button>
       );
     },

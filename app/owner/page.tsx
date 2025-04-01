@@ -30,7 +30,6 @@ function page() {
 
   return (
     <main className="mx-auto py-12 px-4 max-w-6xl">
-      {/* <ClientsTable /> */}
       <div className="flex justify-end">
         <Button variant="default" onClick={() => setIsAddDialogOpen(true)}>
           <User size={36} />

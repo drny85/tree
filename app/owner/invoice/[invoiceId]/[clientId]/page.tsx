@@ -53,7 +53,7 @@ export default function InvoicePage({
   };
 
   const handleApplyDiscount = async (discount: number) => {
-    if (!invoiceDetails || discount <= 0) return;
+    if (!invoiceDetails || discount < 0) return;
     await updateInvoice({
       id: invoiceId,
       clientId: invoiceDetails.clientId,
@@ -133,7 +133,7 @@ export default function InvoicePage({
   }, [invoiceDetails]);
 
   const discountAmount = useMemo(() => {
-    if (!invoiceDetails || !invoiceDetails.discount) return 0;
+    if (!invoiceDetails || !invoiceDetails.discount || discount === 0) return 0;
 
     const amount = getDiscountAmount(subTotal, discount || 0);
     return amount;
@@ -333,7 +333,7 @@ export default function InvoicePage({
               <span className="font-medium">Subtotal:</span>
               <span>{formatUSD(subTotal)}</span>
             </div>
-            {discount && discount > 0 && (
+            {discount && discount > 0 ? (
               <div className="flex justify-between py-2">
                 <span className="font-sm text-red-400">
                   Discount ({invoiceDetails.discount}%):
@@ -342,6 +342,8 @@ export default function InvoicePage({
                   -{formatUSD(discountAmount)}
                 </span>
               </div>
+            ) : (
+              ""
             )}
 
             <div className="flex justify-between py-2 border-t border-gray-200 font-bold">
