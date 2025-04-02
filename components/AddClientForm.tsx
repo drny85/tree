@@ -228,7 +228,8 @@ function AutocompleteComponent({ field }: { field: any }) {
     field.onChange(e.target.value);
   };
 
-  const handleSelect = async (address: string) => {
+  const handleSelect = async (address: string, x: any) => {
+    console.log("handleInput", x);
     setValue(address, false);
     field.onChange(address);
     clearSuggestions();
@@ -274,10 +275,10 @@ function AutocompleteComponent({ field }: { field: any }) {
       </div>
       {status === "OK" && (
         <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-          {data.map(({ place_id, description }) => (
+          {data.map(({ place_id, description, matched_substrings }) => (
             <li
               key={place_id}
-              onClick={() => handleSelect(description)}
+              onClick={() => handleSelect(description, matched_substrings)}
               className="relative cursor-pointer select-none py-2 px-3 text-gray-900 hover:bg-indigo-100 hover:text-indigo-900"
             >
               {description}
