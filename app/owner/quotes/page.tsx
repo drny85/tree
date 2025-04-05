@@ -1,10 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { DataTable } from "@/components/earnings/data-table";
 import { quotesColumns } from "@/components/tables";
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
 
 export default function QuotesPage() {
   const quotes = useQuery(api.quotes.quotes);

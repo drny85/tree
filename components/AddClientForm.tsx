@@ -1,13 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -16,9 +9,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
-import { Save } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/convex/_generated/api";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadScriptNext } from "@react-google-maps/api";
+import { useMutation } from "convex/react";
+import { Save } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -242,10 +242,9 @@ export function AddClientForm({ onOpenChange }: Props) {
 
 // Remove the useEffect in the main component that has the field reference error
 
-import usePlacesAutocomplete from "use-places-autocomplete";
-import { useEffect } from "react";
-import { Id } from "@/convex/_generated/dataModel";
 import { useClientStore } from "@/stores/useClientStore";
+import { useEffect } from "react";
+import usePlacesAutocomplete from "use-places-autocomplete";
 
 function AutocompleteComponent({ field }: { field: any }) {
   const {

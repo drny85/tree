@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { companyInfo, InvoiceItem } from "@/typing";
 import { formatUSD } from "@/utils/formatDollar";
 import { getDiscountAmount } from "@/utils/getDiscountAmount";
-import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useMutation, useQuery } from "convex/react";
 import { format } from "date-fns";
 import { Edit, Trash } from "lucide-react";

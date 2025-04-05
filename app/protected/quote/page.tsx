@@ -50,7 +50,7 @@ export default function QuotePage() {
       form.setValue("name", `${user.firstName} ${user.lastName}`);
       form.setValue("email", user.email);
     }
-  }, [user]);
+  }, [user, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!userId) {

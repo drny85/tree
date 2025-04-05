@@ -1,16 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { SignInButton, useAuth, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 
 import { ContactForm } from "@/components/ContactForm";
+import GetQuoteButton from "@/components/GetQuoteButton";
 import { ModeToggle } from "@/components/ModeToggle";
 import { api } from "@/convex/_generated/api";
 import { companyInfo } from "@/typing";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import Link from "next/link";
-import GetQuoteButton from "@/components/GetQuoteButton";
 
 export default function Home() {
   const { userId } = useAuth();
