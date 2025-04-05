@@ -21,12 +21,13 @@ export type Invoice = {
   _id: Id<"invoices">;
   _creationTime: number;
   clientId: Id<"clients">;
-  invoiceNumber: number;
-  status: "draft" | "sent" | "paid";
+  invoiceNumber?: number;
+  status: "draft" | "sent" | "paid" | "requested";
   date: string;
   dueDate?: string;
   tax: number;
   discount?: number;
+  notes?: string;
 };
 
 export const companyInfo = {

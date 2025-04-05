@@ -19,6 +19,42 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
+export const quotesColumns: ColumnDef<Doc<"quotes">>[] = [
+  {
+    accessorKey: "clientName",
+    header: "Client",
+    cell: ({ row }) => {
+      return <div className="capitalize">{row.getValue("clientName")}</div>;
+    },
+  },
+  {
+    accessorKey: "clientPhone",
+    header: "Phone",
+    cell: ({ row }) => <div>{row.getValue("clientPhone")}</div>,
+  },
+
+  {
+    accessorKey: "date",
+    header: "Date",
+    cell: ({ row }) => formatDate(row.getValue("date")),
+  },
+  {
+    accessorKey: "actions",
+    enableSorting: false,
+    header: "",
+    cell: ({ row }) => {
+      const quote = row.original;
+      return (
+        <div>
+          <Link href={`/owner/quotes/${quote._id}`}>
+            <Button>View</Button>
+          </Link>
+        </div>
+      );
+    },
+  },
+];
+
 export const invoicesColumns: ColumnDef<Doc<"invoices">>[] = [
   {
     accessorKey: "invoiceNumber",

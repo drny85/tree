@@ -25,7 +25,6 @@ export default function ClientPage() {
       const invoice = await createInvoice({
         discount: 0,
         clerkUserId: userId,
-        invoiceNumber: invoices?.length + 1 || 0,
         clientId: client._id,
         status: "draft",
         date: new Date().toISOString(),

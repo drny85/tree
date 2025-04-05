@@ -17,6 +17,8 @@ import {
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -27,6 +29,7 @@ const formSchema = z.object({
 
 export function ContactForm() {
   const [emailSent, setEmailSent] = useState(false);
+  const createQuote = useMutation(api.quotes.createQuote);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,6 +54,13 @@ export function ContactForm() {
       if (!sent) {
         throw new Error("Message failed to send!");
       }
+      await createQuote({
+        clientName: values.name,
+        clientEmail: values.email,
+        clientPhone: values.phone,
+        description: values.message,
+        date: new Date().toISOString(),
+      });
       toast.success("Message sent successfully!");
       form.reset();
       setEmailSent(true);
@@ -86,7 +96,7 @@ export function ContactForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Full Name</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="John Doe"

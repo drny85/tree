@@ -1,6 +1,7 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { getCurrentUser } from "./users";
+import { statusLitetal } from "./schema";
 
 export const getInvoice = query({
   args: { id: v.id("invoices") },
@@ -12,23 +13,36 @@ export const getInvoice = query({
 
 export const createInvoice = mutation({
   args: {
-    invoiceNumber: v.number(),
     clientId: v.id("clients"),
+    notes: v.optional(v.string()),
     date: v.string(),
     dueDate: v.optional(v.string()),
-    status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
+    status: statusLitetal,
     tax: v.number(),
     clerkUserId: v.string(),
-    discount: v.number(),
+    discount: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("invoices", args);
+    const invoiceNumber = await ctx.db
+      .query("invoices")
+      .filter((q) => q.eq(q.field("clerkUserId"), args.clerkUserId))
+      .collect()
+      .then((invoices) => invoices.length + 1);
+    const invoice = await ctx.db.insert("invoices", { ...args, invoiceNumber });
+    return invoice;
   },
 });
 
 export const getInvoicesWithItems = query({
   handler: async (ctx) => {
-    const invoices = await ctx.db.query("invoices").collect();
+    const user = await getCurrentUser(ctx);
+    if (!user) {
+      throw new Error("Not authenticated");
+    }
+    const invoices = await ctx.db
+      .query("invoices")
+      .filter((q) => q.eq(q.field("clerkUserId"), user.clerkUserId))
+      .collect();
     const invoicesWithItemsAndClientName = await Promise.all(
       invoices.map(async (invoice) => {
         const items = await ctx.db
@@ -44,6 +58,17 @@ export const getInvoicesWithItems = query({
       }),
     );
     return invoicesWithItemsAndClientName;
+  },
+});
+
+export const getInvoiceByQuoteId = query({
+  args: { quoteId: v.id("quotes") },
+  handler: async (ctx, args) => {
+    const invoice = await ctx.db
+      .query("invoices")
+      .filter((q) => q.eq(q.field("quoteId"), args.quoteId))
+      .unique();
+    return invoice;
   },
 });
 
@@ -75,13 +100,13 @@ export const getClientInvoices = query({
 export const updateInvoice = mutation({
   args: {
     id: v.id("invoices"),
-    invoiceNumber: v.number(),
     clientId: v.id("clients"),
     date: v.string(),
     dueDate: v.optional(v.string()),
-    status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
+    status: statusLitetal,
     tax: v.number(),
-    discount: v.number(),
+    notes: v.optional(v.string()),
+    discount: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const existingInvoice = await ctx.db.get(args.id);
@@ -89,12 +114,12 @@ export const updateInvoice = mutation({
       throw new Error("Invoice not found");
     }
     return await ctx.db.patch(args.id, {
-      invoiceNumber: args.invoiceNumber,
       clientId: args.clientId,
       date: args.date,
       dueDate: args.dueDate,
       status: args.status,
       tax: args.tax,
+      notes: args.notes,
       discount: args.discount,
     });
   },

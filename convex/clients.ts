@@ -30,7 +30,12 @@ export const createClient = mutation({
     if (!user || user.role !== "owner") {
       throw new Error("Not authenticated");
     }
-    await ctx.db.insert("clients", { ...args, clerkUserId: user.clerkUserId });
+    const client = await ctx.db.insert("clients", {
+      ...args,
+      clerkUserId: user.clerkUserId,
+    });
+
+    return client;
   },
 });
 
@@ -72,6 +77,35 @@ export const deleteClient = mutation({
     if (!user || user.role !== "owner") {
       throw new Error("Not authenticated");
     }
+    //detele client invoice items
+    const invoices = await ctx.db
+      .query("invoices")
+      .filter((q) => q.eq(q.field("clientId"), args.id))
+      .collect();
+    for (const invoice of invoices) {
+      await ctx.db.delete(invoice._id);
+      const items = await ctx.db
+        .query("items")
+        .filter((q) => q.eq(q.field("invoiceId"), invoice._id))
+        .collect();
+      //delete invoice items
+      for (const item of items) {
+        await ctx.db.delete(item._id);
+      }
+    }
+
+    //delete itemws
+
+    //delete client quotes
+    const quotes = await ctx.db
+      .query("quotes")
+      .filter((q) => q.eq(q.field("clientId"), args.id))
+      .collect();
+    for (const quote of quotes) {
+      await ctx.db.delete(quote._id);
+    }
+
+    //delete client
     await ctx.db.delete(args.id);
   },
 });

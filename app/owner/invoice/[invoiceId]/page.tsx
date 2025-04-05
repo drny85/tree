@@ -82,7 +82,6 @@ export default function InvoicePage() {
       clientId: invoiceDetails?.clientId!,
       date: invoiceDetails?.date!,
       status,
-      invoiceNumber: invoiceDetails?.invoiceNumber!,
       tax: invoiceDetails?.tax!,
     });
     // You can add logic here to update the status in your database
@@ -140,7 +139,7 @@ export default function InvoicePage() {
               alt="Company Logo"
               fill
               sizes="100%"
-              className="object-contain"
+              className="object-contain bg-white"
             />
           </div>
           <div>

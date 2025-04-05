@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -11,7 +12,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/convex/_generated/api";
+import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "convex/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -20,10 +26,15 @@ const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
+  description: z.string().min(16, "Description must be at least 16 characters"),
 });
 
 export default function QuotePage() {
+  const { userId } = useAuth();
+  const user = useQuery(api.users.current);
+
+  const [quoteSent, setQuoteSent] = useState(false);
+  const createQuote = useMutation(api.quotes.createQuote);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,10 +45,30 @@ export default function QuotePage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  useEffect(() => {
+    if (user) {
+      form.setValue("name", `${user.firstName} ${user.lastName}`);
+      form.setValue("email", user.email);
+    }
+  }, [user]);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!userId) {
+      toast.error("You must be logged in to request a quote.");
+      return;
+    }
+    await createQuote({
+      clientEmail: values.email,
+      clientName: values.name,
+      clientPhone: values.phone,
+      description: values.description,
+      clerkUserId: userId,
+      date: new Date().toISOString(),
+    });
     toast.success("Quote Request Submitted", {
       description: "We will get back to you shortly.",
     });
+    setQuoteSent(true);
     console.log(values);
 
     try {
@@ -47,6 +78,28 @@ export default function QuotePage() {
       });
       console.error(error);
     }
+  }
+
+  if (quoteSent) {
+    return (
+      <div className="flex h-screen mx-auto container items-center justify-center">
+        <Card>
+          <div className="container mx-auto px-10 py-8 justify-center">
+            <div className="mb-8 text-center">
+              <h1 className="text-4xl font-bold mb-2 ">
+                Quote Request Submitted
+              </h1>
+              <p className="">We will get back to you shortly.</p>
+            </div>
+          </div>
+          <Link href="/protected" className="mt-4 w-fit self-center px-6">
+            <Button className="px-16" onClick={() => setQuoteSent(false)}>
+              Got It
+            </Button>
+          </Link>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -68,7 +121,11 @@ export default function QuotePage() {
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} />
+                    <Input
+                      placeholder="John Doe"
+                      {...field}
+                      className="capitalize"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -100,7 +157,29 @@ export default function QuotePage() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="(123) 456-7890" type="tel" {...field} />
+                    <Input
+                      placeholder="(800) 456-7890"
+                      {...field}
+                      maxLength={14}
+                      onChange={(e) => {
+                        // Format phone number as (XXX) XXX-XXXX
+                        const value = e.target.value.replace(/\D/g, "");
+                        const formattedValue = value
+                          .replace(
+                            /(\d{3})(\d{0,3})(\d{0,4})/,
+                            (_, p1, p2, p3) => {
+                              let result = "";
+                              if (p1) result += `(${p1})`;
+                              if (p2) result += ` ${p2}`;
+                              if (p3) result += `-${p3}`;
+                              return result;
+                            },
+                          )
+                          .trim();
+                        field.onChange(formattedValue);
+                      }}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -22,7 +22,7 @@ export async function Navbar() {
                 fill
                 sizes="100%"
                 priority
-                className="object-contain rounded-full"
+                className="object-contain rounded-full bg-white"
               />
             </div>
             <Link href={isOwner ? "/owner" : "/protected"}>
@@ -34,20 +34,31 @@ export async function Navbar() {
 
           {/* Navigation Links and User Button */}
           <div className="flex items-center space-x-6">
-            <Link
-              href={isOwner ? "/owner/earnings" : "/protected"}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-            >
-              <DollarSign size={20} />
-              <span>Earning</span>
-            </Link>
-            <Link
-              href={isOwner ? "/owner" : "/protected"}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-            >
-              <Users size={20} />
-              <span>Clients</span>
-            </Link>
+            {isOwner && (
+              <>
+                <Link
+                  href={"/owner/quotes"}
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                >
+                  <span>Quotes</span>
+                </Link>
+                <Link
+                  href={"/owner/earnings"}
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                >
+                  <DollarSign size={20} />
+                  <span>Earning</span>
+                </Link>
+                <Link
+                  href={"/owner"}
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                >
+                  <Users size={20} />
+                  <span>Clients</span>
+                </Link>
+              </>
+            )}
+
             <ModeToggle />
             <UserButton />
           </div>

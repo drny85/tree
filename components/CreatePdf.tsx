@@ -97,7 +97,11 @@ export default function CreatePdf({
     doc.setFontSize(14); // Adjust this value to position client info
     doc.text(`Client: ${client?.name}`, clientInfoX, 42);
     doc.setFontSize(10);
-    doc.text(`Address: ${client?.address}`, clientInfoX, 48);
+    doc.text(
+      `Address: ${client?.address || "No Address Provided"}`,
+      clientInfoX,
+      48,
+    );
     doc.text(`Email: ${client?.email}`, clientInfoX, 54);
     doc.text(`Phone: ${client?.phone}`, clientInfoX, 60);
 

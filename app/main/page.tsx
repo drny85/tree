@@ -10,6 +10,7 @@ import { api } from "@/convex/_generated/api";
 import { companyInfo } from "@/typing";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import Link from "next/link";
+import GetQuoteButton from "@/components/GetQuoteButton";
 
 export default function Home() {
   const { userId } = useAuth();
@@ -24,7 +25,7 @@ export default function Home() {
             alt="Breidys Logo"
             width={40}
             height={40}
-            className="rounded-full"
+            className="rounded-full bg-white"
           />
           <span className="text-xl font-bold">Breidys Tree Services</span>
         </div>
@@ -126,11 +127,7 @@ export default function Home() {
           <div className="mt-8 mb-8">
             <ContactForm />
           </div>
-          <Link href={"/protected/quote"}>
-            <Button variant="outline" className="mt-4">
-              Get a Quote
-            </Button>
-          </Link>
+          <GetQuoteButton />
         </section>
       </main>
       <footer className="bg-green-600 p-4 text-center text-white">

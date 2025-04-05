@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { companyInfo, InvoiceItem } from "@/typing";
 import { formatUSD } from "@/utils/formatDollar";
 import { getDiscountAmount } from "@/utils/getDiscountAmount";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useMutation, useQuery } from "convex/react";
 import { format } from "date-fns";
 import { Edit, Trash } from "lucide-react";
@@ -59,7 +60,7 @@ export default function InvoicePage({
       clientId: invoiceDetails.clientId,
       date: invoiceDetails.date,
       status: invoiceDetails.status,
-      invoiceNumber: invoiceDetails.invoiceNumber,
+      notes: invoiceDetails.notes,
       tax: invoiceDetails.tax,
       discount: discount,
     });
@@ -76,6 +77,17 @@ export default function InvoicePage({
         rate: item.rate,
         amount: item.amount,
       });
+      if (invoiceDetails?.status === "requested") {
+        await updateInvoice({
+          id: invoiceId,
+          clientId: invoiceDetails?.clientId!,
+          date: invoiceDetails?.date!,
+          status: "draft",
+          tax: invoiceDetails?.tax!,
+          notes: invoiceDetails?.notes!,
+          discount: invoiceDetails?.discount!,
+        });
+      }
       setIsAddItemDialogOpen(false);
       toast.success("Item added to invoice");
     } catch (error) {
@@ -92,7 +104,6 @@ export default function InvoicePage({
       clientId: invoiceDetails?.clientId!,
       date: invoiceDetails?.date!,
       status,
-      invoiceNumber: invoiceDetails?.invoiceNumber!,
       tax: invoiceDetails?.tax!,
     });
     // You can add logic here to update the status in your database
@@ -165,7 +176,7 @@ export default function InvoicePage({
               alt="Company Logo"
               fill
               sizes="100%"
-              className="object-contain"
+              className="object-contain bg-white"
             />
           </div>
           <div>
@@ -192,7 +203,10 @@ export default function InvoicePage({
           </h3>
           <p className="font-medium text-xl capitalize">Name: {client?.name}</p>
           <p className="text-gray-600 dark:text-slate-300 capitalize">
-            Address:{client?.address}
+            Address:{" "}
+            <span className="italic">
+              {client?.address || "No Address Provided"}
+            </span>
           </p>
           <p className="text-gray-600 dark:text-slate-300">
             Email: {client?.email}
@@ -320,6 +334,19 @@ export default function InvoicePage({
                 </td>
               </tr>
             ))}
+            {invoiceDetails.notes && (
+              <tr
+                key={invoiceItems.length}
+                className="border-b border-gray-100"
+              >
+                <td colSpan={6} className="py-3 px-4 italic ">
+                  <div>
+                    <span className="font-semibold">Client's Notes: </span>
+                  </div>
+                  <div className="p-2 rounded-md ">{invoiceDetails.notes}</div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       )}

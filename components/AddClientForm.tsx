@@ -38,32 +38,62 @@ type Props = {
 };
 export function AddClientForm({ onOpenChange }: Props) {
   const createClient = useMutation(api.clients.createClient);
+  const updateClient = useMutation(api.clients.updateClient);
+  const { selectedClient: client, setSelectedClient } = useClientStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      address: "",
-      notes: "",
+      name: client?.name || "",
+      email: client?.email || "",
+      phone: client?.phone || "",
+      address: client?.address || "",
+      notes: client?.notes || "",
     },
   });
 
+  // Update the form when client prop changes
+  useEffect(() => {
+    if (client) {
+      form.reset({
+        name: client.name,
+        email: client.email || "",
+        phone: client.phone,
+        address: client.address || "",
+        notes: client.notes || "",
+      });
+    }
+  }, [client, form]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await createClient({
-        name: values.name,
-        email: values.email || undefined,
-        phone: values.phone,
-        address: values.address || undefined,
-        notes: values.notes || undefined,
-      });
+      if (client?._id) {
+        // Update existing client
+        await updateClient({
+          id: client._id,
+          name: values.name,
+          email: values.email || undefined,
+          phone: values.phone,
+          address: values.address || undefined,
+          notes: values.notes || undefined,
+        });
+        toast.success("Client updated successfully!");
+      } else {
+        // Create new client
+        await createClient({
+          name: values.name,
+          email: values.email || undefined,
+          phone: values.phone,
+          address: values.address || undefined,
+          notes: values.notes || undefined,
+        });
+        toast.success("Client added successfully!");
+      }
       form.reset();
-      toast.success("Client added successfully!");
       onOpenChange(false);
+      setSelectedClient(null);
     } catch (error) {
-      toast.error("Failed to add client");
+      toast.error(client ? "Failed to update client" : "Failed to add client");
       console.error(error);
     }
   }
@@ -201,7 +231,7 @@ export function AddClientForm({ onOpenChange }: Props) {
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <Save />
-              Add Client
+              {client ? "Update Client" : "Add Client"}
             </Button>
           </div>
         </form>
@@ -213,6 +243,9 @@ export function AddClientForm({ onOpenChange }: Props) {
 // Remove the useEffect in the main component that has the field reference error
 
 import usePlacesAutocomplete from "use-places-autocomplete";
+import { useEffect } from "react";
+import { Id } from "@/convex/_generated/dataModel";
+import { useClientStore } from "@/stores/useClientStore";
 
 function AutocompleteComponent({ field }: { field: any }) {
   const {

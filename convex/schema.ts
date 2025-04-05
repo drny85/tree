@@ -5,6 +5,13 @@ import { v } from "convex/values";
 // You can delete this file (schema.ts) and the
 // app will continue to work.
 // The schema provides more precise TypeScript types.
+
+export const statusLitetal = v.union(
+  v.literal("draft"),
+  v.literal("sent"),
+  v.literal("paid"),
+  v.literal("requested"),
+);
 export default defineSchema({
   users: defineTable({
     clerkUserId: v.string(),
@@ -30,13 +37,29 @@ export default defineSchema({
     amount: v.number(),
   }).index("by_invoiceId", ["invoiceId"]),
   invoices: defineTable({
+    quoteId: v.optional(v.id("quotes")),
     clientId: v.id("clients"),
     clerkUserId: v.string(),
-    invoiceNumber: v.number(),
+    invoiceNumber: v.optional(v.number()),
     discount: v.optional(v.number()),
     date: v.string(),
-    status: v.union(v.literal("draft"), v.literal("sent"), v.literal("paid")),
+    status: statusLitetal,
     dueDate: v.optional(v.string()),
+    notes: v.optional(v.string()),
     tax: v.number(),
-  }).index("by_client", ["clientId"]),
+  })
+    .index("by_client", ["clientId"])
+    .index("by_quoteId", ["quoteId"]),
+  quotes: defineTable({
+    clientId: v.optional(v.id("clients")),
+    clerkUserId: v.optional(v.string()),
+    date: v.string(),
+    invoiceId: v.optional(v.id("invoices")),
+    clientName: v.optional(v.string()),
+    clientEmail: v.optional(v.string()),
+    clientPhone: v.optional(v.string()),
+    description: v.string(),
+  })
+    .index("by_invoiceId", ["invoiceId"])
+    .index("by_clerkUserId", ["clerkUserId"]),
 });

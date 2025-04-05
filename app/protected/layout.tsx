@@ -1,3 +1,4 @@
+import { Navbar } from "@/components/Navbar";
 import React from "react";
 
 export default function ProtectedLayout({
@@ -27,7 +28,10 @@ export default function ProtectedLayout({
           backgroundColor: "rgba(0, 0, 0, 0.6)", // Optional overlay
         }}
       />
-      <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <Navbar />
+        {children}
+      </div>
     </div>
   );
 }

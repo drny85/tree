@@ -2,7 +2,6 @@
 import { AddClient } from "@/components/AddClient";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { DataTable } from "@/components/earnings/data-table";
-import { EditClientDialog } from "@/components/EditClientForm";
 import { createClientColumns } from "@/components/tables";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
@@ -37,8 +36,10 @@ function Page() {
       </div>
       <DataTable columns={columns} data={clients || []} />
 
-      <AddClient open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
-      {client && <EditClientDialog client={client} />}
+      <AddClient
+        open={isAddDialogOpen || client !== null}
+        onOpenChange={setIsAddDialogOpen}
+      />
 
       <ConfirmDialog
         open={!!itemToDelete}
