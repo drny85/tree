@@ -113,6 +113,7 @@ export default function CreatePdf({
       startY: 80,
       headStyles: { fillColor: [100, 100, 100] },
       margin: { top: 10, left: 10, right: 10 },
+
       columnStyles: {
         0: { cellWidth: "wrap" },
         1: { cellWidth: "auto" },

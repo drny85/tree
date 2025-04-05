@@ -1,10 +1,11 @@
 import { companyInfo } from "@/typing";
+import { checkRole } from "@/utils/roles";
 import { UserButton } from "@clerk/nextjs";
 import { DollarSign, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import MobileMenu from "./MobileMenu";
 import { ModeToggle } from "./ModeToggle";
-import { checkRole } from "@/utils/roles";
 
 export async function Navbar() {
   const isOwner = await checkRole("owner");
@@ -26,14 +27,14 @@ export async function Navbar() {
               />
             </div>
             <Link href={isOwner ? "/owner" : "/protected"}>
-              <span className="text-xl font-semibold text-gray-900 dark:text-white hidden md:flex  hover:cursor-pointer">
+              <span className="text-xl font-semibold text-gray-900 dark:text-white hidden md:flex hover:cursor-pointer">
                 {companyInfo.name}
               </span>
             </Link>
           </div>
 
-          {/* Navigation Links and User Button */}
-          <div className="flex items-center space-x-6">
+          {/* Desktop Navigation Links and User Button */}
+          <div className="hidden md:flex items-center space-x-6">
             {isOwner && (
               <>
                 <Link
@@ -62,8 +63,17 @@ export async function Navbar() {
             <ModeToggle />
             <UserButton />
           </div>
+
+          {/* Mobile menu button and user controls */}
+          <div className="flex md:hidden items-center space-x-4">
+            <ModeToggle />
+            <UserButton />
+            {isOwner && <MobileMenu />}
+          </div>
         </div>
       </div>
     </nav>
   );
 }
+
+// Mobile menu component
