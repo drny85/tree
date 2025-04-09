@@ -164,10 +164,22 @@ export default function CreatePdf({
     doc.text(`Total: ${formatUSD(total)}`, rightAlignX, finalY + 22, {
       align: "right",
     });
+    doc.setFontSize(9);
+    doc.text(
+      " We accept payment in cash or check. Pay with cash and receive a 5% discount!",
+      finalY,
+      finalY + 40,
+      { align: "center" },
+    );
 
     // Add notes
     doc.setFontSize(10);
-
+    doc.text(
+      " We accept payment in cash or check. Pay with cash and receive a 5% discount!",
+      pageWidth / 2 - 10,
+      pageHeight - 18,
+      { align: "center" },
+    );
     doc.text(
       "Thank you for your business!:",
       pageWidth / 2 - 10,

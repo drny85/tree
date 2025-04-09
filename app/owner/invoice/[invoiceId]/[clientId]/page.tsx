@@ -379,9 +379,15 @@ export default function InvoicePage({
           </div>
         </div>
       )}
+      <div className="mt-5">
+        <p className="font-medium text-gray-500 dark:text-slate-300 text-center">
+          We accept payment in cash or check. Pay with cash and receive a 5%
+          discount!
+        </p>
+      </div>
 
       {/* Footer */}
-      <div className="mt-12 pt-6 border-t border-gray-200 text-center ">
+      <div className="mt-10 pt-6 border-t border-gray-200 text-center ">
         <p>Thank you for your business!</p>
         <p className="mt-2 font-semibold">{companyInfo.name}</p>
       </div>
